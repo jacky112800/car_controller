@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">car</string>
+    <string name="start_title">無人辨識車車控制器</string>
+    <string name="start_button">登入</string>
+    <string name="account">帳號:</string>
+    <string name="password">密碼:</string>
+</resources>
