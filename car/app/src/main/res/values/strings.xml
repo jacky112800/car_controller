@@ -1,7 +1,20 @@
 <resources>
     <string name="app_name">car</string>
-    <string name="start_title">無人辨識車車控制器</string>
+    <string name="start_title">無人辨識車控制器</string>
     <string name="start_button">登入</string>
+    <string name="start_exit">離開</string>
     <string name="account">帳號:</string>
     <string name="password">密碼:</string>
+    <string name="account_tip">請輸入帳號</string>
+    <string name="password_tip">請輸入密碼</string>
+    <string name="verification">驗證</string>
+    <string name="verification_tip">驗證</string>
+    <string name="tap_start">點擊以進入操作介面</string>
+    <string name="item_select">辨識物件選擇</string>
+    <string name="camera_switch">相機功能切換</string>
+    <string name="file_location">檔案位置</string>
+    <string name="color_select">物件邊框顏色選擇</string>
+    <string name="working">版本資訊</string>
+    <string name="title_activity_setting">設定</string>
+
 </resources>

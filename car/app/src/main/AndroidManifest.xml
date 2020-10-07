@@ -9,7 +9,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".joystick"></activity>
+        <activity
+            android:name=".setting"
+            android:label="@string/title_activity_setting"
+            android:screenOrientation="landscape"
+            android:theme="@style/setting_bar" />
+        <activity
+            android:name=".start_tap"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".camera"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".check"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

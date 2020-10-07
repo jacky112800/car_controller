@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="car/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/611636659/car.iml" filepath="$PROJECT_DIR$/.idea/modules/611636659/car.iml" group="car" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1778829077/virtualjoystick.iml" filepath="$PROJECT_DIR$/.idea/modules/-1778829077/virtualjoystick.iml" group="car/virtualjoystick" />
+    </modules>
+  </component>
+</project>
