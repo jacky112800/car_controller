@@ -16,5 +16,6 @@
     <string name="color_select">物件邊框顏色選擇</string>
     <string name="working">版本資訊</string>
     <string name="title_activity_setting">設定</string>
+    <string name="confirm_st">確定</string>
 
 </resources>

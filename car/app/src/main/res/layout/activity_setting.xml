@@ -8,7 +8,7 @@
     tools:context=".setting">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_item_select"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -18,13 +18,14 @@
         android:layout_marginRight="16dp"
         android:text="@string/item_select"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
+        android:onClick="to_select"
+        app:layout_constraintBottom_toTopOf="@+id/btn_camera_sw"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_camera_sw"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -33,13 +34,13 @@
         android:layout_marginRight="16dp"
         android:text="@string/camera_switch"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button4"
+        app:layout_constraintBottom_toTopOf="@+id/btn_file_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_item_select" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btn_file_address"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -48,13 +49,13 @@
         android:layout_marginRight="16dp"
         android:text="@string/file_location"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
+        app:layout_constraintBottom_toTopOf="@+id/btn_color_select"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_camera_sw" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btn_color_select"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -63,13 +64,13 @@
         android:layout_marginRight="16dp"
         android:text="@string/color_select"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button6"
+        app:layout_constraintBottom_toTopOf="@+id/btn_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_file_address" />
 
     <Button
-        android:id="@+id/button6"
+        android:id="@+id/btn_info"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -82,5 +83,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button5" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_color_select" />
 </androidx.constraintlayout.widget.ConstraintLayout>
