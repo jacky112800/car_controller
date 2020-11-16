@@ -34,6 +34,7 @@
         android:layout_marginRight="16dp"
         android:text="@string/camera_switch"
         android:textSize="24sp"
+        android:onClick="to_camera_switch"
         app:layout_constraintBottom_toTopOf="@+id/btn_file_address"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

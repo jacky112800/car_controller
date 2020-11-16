@@ -18,4 +18,14 @@ class setting : AppCompatActivity() {
         val itemSelect_intent = Intent(this,item_select::class.java)
         startActivity(itemSelect_intent)
     }
+    fun to_camera_switch(view: View){
+        Toast.makeText(this,"camera_switch",Toast.LENGTH_LONG).show()
+        val itemSelect_intent = Intent(this,camera_switch::class.java)
+        startActivity(itemSelect_intent)
+    }
+    fun to_file_location(view: View){
+        Toast.makeText(this,"file_location",Toast.LENGTH_LONG).show()
+        val itemSelect_intent = Intent(this,file_location::class.java)
+        startActivity(itemSelect_intent)
+    }
 }

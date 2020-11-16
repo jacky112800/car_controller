@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_camera.view.*
+import android.widget.Button
 
 
 class camera : AppCompatActivity() {
@@ -28,10 +29,20 @@ class camera : AppCompatActivity() {
             m_angle_tv!!.setText(angle.toString())
             m_strength_tv!!.setText(strength.toString())
         }
+    right_left_btn.setOnClickListener(object :View.OnClickListener{
+        override fun onClick(v: View?) {
+            right_left_btn.setBackgroundResource(R.drawable.round_btn_change_color)
+        }
+    })
 
     }
     fun to_setting (view: View){
         val intent_setting=Intent(this,setting::class.java)
         startActivity(intent_setting)
     }
+
+//    fun car_run (view: View){
+//        val button : Button =findViewById(R.id.right_left_btn)
+//        button.setBackgroundResource(R.drawable.round_btn_change_color)
+//    }
 }
