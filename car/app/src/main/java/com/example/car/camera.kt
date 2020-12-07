@@ -1,43 +1,64 @@
 package com.example.car
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import kotlinx.android.synthetic.main.activity_camera.*
-import kotlinx.android.synthetic.main.activity_camera.view.*
-import android.widget.Button
+import java.io.File
+import java.io.InputStream
 
 
 class camera : AppCompatActivity() {
 
     private var m_angle_tv: TextView? = null
     private var m_strength_tv: TextView? = null
+    var img_byte:ByteArray? = null
+    val img_view_car=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
+
+        //joystick
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
         m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
-
         val joystick =findViewById<JoystickView>(R.id.joystickView_car)
         joystick.setOnMoveListener { angle, strength ->
             m_angle_tv!!.setText(angle.toString())
             m_strength_tv!!.setText(strength.toString())
         }
-    right_left_btn.setOnClickListener(object :View.OnClickListener{
+    right_left_btn.setOnClickListener(object : View.OnClickListener {
         override fun onClick(v: View?) {
-            right_left_btn.setBackgroundResource(R.drawable.round_btn_change_color)
+//            right_left_btn.setBackgroundResource(R.drawable.round_btn_change_color)
+            draw_img()
+
+
         }
+
     })
+        //joystick
+
+
+
 
     }
-    fun to_setting (view: View){
-        val intent_setting=Intent(this,setting::class.java)
+
+    fun readbyte (view:View){
+//        val inputStream:InputStream=File("886_886b").inputStream()
+
+    }
+
+    fun to_setting(view: View){
+        val intent_setting=Intent(this, setting::class.java)
         startActivity(intent_setting)
     }
 
@@ -45,4 +66,23 @@ class camera : AppCompatActivity() {
 //        val button : Button =findViewById(R.id.right_left_btn)
 //        button.setBackgroundResource(R.drawable.round_btn_change_color)
 //    }
+
+    fun draw_img(){
+        val img_view_car=findViewById<ImageView>(R.id.img_view_car_to_iphone)
+
+        val w: Int = 886
+        val h: Int = 886
+        val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        var r: Int=(0..255).random()
+        var g: Int=(0..255).random()
+        var b: Int=(0..255).random()
+
+
+        for (x in 0 until w) {
+            for (y in 0 until h) {
+                compare.setPixel(x, y, Color.rgb( r, g, b))
+            }
+        }
+        img_view_car.setImageBitmap(compare)
+    }
 }

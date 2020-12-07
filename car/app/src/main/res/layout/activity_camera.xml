@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     android:background="#D0000000">
 
+    <ImageView
+        android:id="@+id/img_view_car_to_iphone"
+        android:layout_width="731dp"
+        android:layout_height="379dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/cardview_light_background" />
+
     <Button
         android:id="@+id/recording_btn"
         android:layout_width="65dp"
@@ -13,6 +23,7 @@
         android:background="@android:drawable/ic_menu_camera"
         android:contentDescription=""
         android:text=""
+        android:onClick="readbyte"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,10 +34,10 @@
         android:id="@+id/right_left_btn"
         android:layout_width="104dp"
         android:layout_height="102dp"
-        android:background="@drawable/round_btn"
+        android:background="@drawable/round_switch"
         android:contentDescription=""
-        android:text=""
         android:onClick="car_run"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.907"
