@@ -4,17 +4,20 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.InputStream
 
+@RequiresApi(Build.VERSION_CODES.O)
 
 class camera : AppCompatActivity() {
 
@@ -22,6 +25,7 @@ class camera : AppCompatActivity() {
     private var m_strength_tv: TextView? = null
     var img_byte:ByteArray? = null
     val img_view_car=null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,10 +81,11 @@ class camera : AppCompatActivity() {
         var g: Int=(0..255).random()
         var b: Int=(0..255).random()
 
+        var ccc:Int=0xff000000.toInt()
 
         for (x in 0 until w) {
             for (y in 0 until h) {
-                compare.setPixel(x, y, Color.rgb( r, g, b))
+                compare.setPixel(x,y,Color.rgb(0xff,0xff,0xff))
             }
         }
         img_view_car.setImageBitmap(compare)
