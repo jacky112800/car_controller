@@ -78,21 +78,31 @@ class camera : AppCompatActivity() {
     fun draw_img() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
-        val w: Int = 886
-        val h: Int = 886
-        val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-        var r: Int = (0..255).random()
-        var g: Int = (0..255).random()
-        var b: Int = (0..255).random()
-//        var get_pixel_data=client_th().get_data
-
-
-
-        for (x in 0 until w) {
-            for (y in 0 until h) {
-                compare.setPixel(x, y, Color.rgb(0xff, 0xff, 0xff))
+        var th = client_th()
+        th.start()
+        var pixel_data = client_th().get_data
+        
+        if (pixel_data != null) {
+            val w: Int = pixel_data[0].toInt()
+            val h: Int = pixel_data[1].toInt()
+            val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+//        var r: Int = (0..255).random()
+//        var g: Int = (0..255).random()
+//        var b: Int = (0..255).random()
+            for (x in 0 until w) {
+                for (y in 0 until h) {
+                    compare.setPixel(
+                        x,
+                        y,
+                        Color.rgb(
+                            pixel_data[17 + (x * 3) + (y * 3)].toInt(),
+                            pixel_data[18 + (x * 3) + (y * 3)].toInt(),
+                            pixel_data[19 + (x * 3) + (y * 3)].toInt()
+                        )
+                    )
+                }
             }
+            img_view_car.setImageBitmap(compare)
         }
-        img_view_car.setImageBitmap(compare)
     }
 }

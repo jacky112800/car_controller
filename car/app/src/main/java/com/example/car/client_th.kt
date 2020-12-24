@@ -6,9 +6,10 @@ import java.net.Socket
 import java.nio.charset.Charset
 import java.util.*
 import kotlin.concurrent.thread
+import kotlin.math.max
 
 class client_th : Thread() {
-    var get_data:ByteArray= byteArrayOf()
+    var get_data: ByteArray = byteArrayOf()
     override fun run() {
         val address = "172.25.128.1"
         val port = 5050
@@ -32,12 +33,18 @@ class client_controller(address: String, port: Int) {
     private val writer: OutputStream = connection.getOutputStream()
     var img_bt = byteArrayOf()
     fun run() {
-        val length: Int = data_in.readInt()
-        var img_bt = ByteArray(2764816)
-        data_in.readFully(img_bt, 0, img_bt.size)
+        val length: Int = 2764816
+        var img_bt = ByteArray(length)
+        while (connected) {
+            data_in.readFully(img_bt, 0, img_bt.size)
+            if (img_bt[length] != null) {
+                connected = false
+                reader.close()
+                connection.close()
+            }
 
-        reader.close()
-        connection.close()
+        }
+
     }
 
     private fun write(message: String) {
