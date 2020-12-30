@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var th = client_th()
-        th.start()
+
     }
 
     fun sign_in(view: View) {

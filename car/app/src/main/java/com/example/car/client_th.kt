@@ -8,54 +8,39 @@ import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.max
 
-class client_th : Thread() {
-    var get_data: ByteArray = byteArrayOf()
+
+open class client_th : Thread(){
+    var get_data: UByteArray = UByteArray((800 * 800 * 3) + 16)
     override fun run() {
-        val address = "172.25.128.1"
+        val address = "192.168.100.27"
         val port = 5050
-        val client = client_controller(address, port)
-        client.run()
-        var get_data: ByteArray = client.img_bt
-    }
-}
-
-
-class client_controller(address: String, port: Int) {
-    private val connection: Socket = Socket(address, port)
-    private var connected: Boolean = true
-    var data_in: DataInputStream = DataInputStream(connection.getInputStream())
-
-    init {
-        println("Connected to server at $address on port $port")
-    }
-
-    private val reader: Scanner = Scanner(connection.getInputStream())
-    private val writer: OutputStream = connection.getOutputStream()
-    var img_bt = byteArrayOf()
-    fun run() {
-        val length: Int = 2764816
+        val connection: Socket = Socket(address, port)
+        var connected: Boolean = true
+        var data_in: DataInputStream = DataInputStream(connection.getInputStream())
+        val reader: Scanner = Scanner(connection.getInputStream())
+        val writer: OutputStream = connection.getOutputStream()
+        val length: Int = (800 * 800 * 3) + 16
         var img_bt = ByteArray(length)
         while (connected) {
             data_in.readFully(img_bt, 0, img_bt.size)
-            if (img_bt[length] != null) {
+
+            if (img_bt[length - 1] != null) {
                 connected = false
                 reader.close()
                 connection.close()
             }
-
+            get_data=img_bt.toUByteArray()
         }
+        println("aaa"+this.get_data)
 
+        return
     }
 
-    private fun write(message: String) {
-        writer.write((message + '\n').toByteArray(Charset.defaultCharset()))
-    }
-
-    private fun read() {
-        while (connected)
-            println(reader.nextLine())
+    fun get_pixel():UByteArray{
+        return get_data
     }
 }
+
 
 
 

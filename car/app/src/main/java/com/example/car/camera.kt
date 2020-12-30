@@ -22,7 +22,7 @@ class camera : AppCompatActivity() {
 
     private var m_angle_tv: TextView? = null
     private var m_strength_tv: TextView? = null
-    var img_byte: ByteArray? = null
+    var img_byte = null
     val img_view_car = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,13 +40,13 @@ class camera : AppCompatActivity() {
         right_left_btn.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
 //            right_left_btn.setBackgroundResource(R.drawable.round_btn_change_color)
-                draw_img()
                 doVibrate()
+                draw_img()
 
             }
-
         })
         //joystick
+        draw_img()
     }
 
     fun doVibrate() {
@@ -75,34 +75,40 @@ class camera : AppCompatActivity() {
 //        button.setBackgroundResource(R.drawable.round_btn_change_color)
 //    }
 
+
     fun draw_img() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
-
+//        try {
+        var pixel_data: UByteArray = UByteArray((800 * 800 * 3) + 16)
         var th = client_th()
         th.start()
-        var pixel_data = client_th().get_data
-        
-        if (pixel_data != null) {
-            val w: Int = pixel_data[0].toInt()
-            val h: Int = pixel_data[1].toInt()
-            val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        pixel_data=th.get_data
+
+        println("client" + pixel_data)
+        val w: Int = 800
+        val h: Int = 800
+        val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
 //        var r: Int = (0..255).random()
 //        var g: Int = (0..255).random()
 //        var b: Int = (0..255).random()
-            for (x in 0 until w) {
-                for (y in 0 until h) {
-                    compare.setPixel(
-                        x,
-                        y,
-                        Color.rgb(
-                            pixel_data[17 + (x * 3) + (y * 3)].toInt(),
-                            pixel_data[18 + (x * 3) + (y * 3)].toInt(),
-                            pixel_data[19 + (x * 3) + (y * 3)].toInt()
-                        )
+        for (x in 0 until w) {
+            for (y in 0 until h) {
+                compare.setPixel(
+                    x,
+                    y,
+                    Color.rgb(
+                        pixel_data[17].toInt(),
+                        pixel_data[18].toInt(),
+                        pixel_data[19].toInt()
                     )
-                }
+                )
             }
-            img_view_car.setImageBitmap(compare)
         }
+        img_view_car.setImageBitmap(compare)
+
+//        } catch (e: Exception) {
+//            println("出不來啦")
+//        }
+
     }
 }
