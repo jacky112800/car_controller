@@ -34,7 +34,7 @@ open class client_th : Thread(){
         }
         println("aaa"+get_data)
         println("bbb"+img_bt)
-
+        img_bt= byteArrayOf()
 
         return
     }
