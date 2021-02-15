@@ -13,7 +13,6 @@ class check : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
-
     }
     fun check_func(view: View){
         Toast.makeText(this,"check",Toast.LENGTH_SHORT).show()

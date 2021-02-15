@@ -26,14 +26,13 @@ class camera : AppCompatActivity() {
     private var m_strength_tv: TextView? = null
     var img_byte = null
     val img_view_car = null
+    var change_color = Timer("change_color", false).schedule(10, 40) {
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
-        var change_color=Timer("change_color", false).schedule(10,40) {
-            draw_img()
-        }
 
         //joystick
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
@@ -47,14 +46,15 @@ class camera : AppCompatActivity() {
             override fun onClick(v: View?) {
 //            right_left_btn.setBackgroundResource(R.drawable.round_btn_change_color)
                 doVibrate()
-                change_color.cancel()
             }
         })
         //joystick
 
-        draw_img()
+
         Thread {
-            change_color.run()
+            change_color = Timer("change_color", false).schedule(10, 40) {
+                draw_img()
+            }
         }.start()
     }
 
@@ -63,15 +63,14 @@ class camera : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= 26) {
             button_vibrator.vibrate(
-                VibrationEffect.createOneShot(
-                    200,
-                    VibrationEffect.DEFAULT_AMPLITUDE
-                )
+                    VibrationEffect.createOneShot(
+                            200,
+                            VibrationEffect.DEFAULT_AMPLITUDE
+                    )
             )
         } else {
             button_vibrator.vibrate(100)
         }
-
     }
 
     fun to_setting(view: View) {
@@ -88,33 +87,37 @@ class camera : AppCompatActivity() {
     fun draw_img() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
-        var pixel_data: UByteArray = UByteArray((800 * 800 * 3) + 16)
-        var th = client_th()
-        th.start()
-        pixel_data=client_th.get_data
+            var pixel_data: UByteArray = UByteArray((800 * 800 * 3) + 16)
+            var th = client_th()
+            th.start()
+            pixel_data = client_th.get_data
 
-        val w: Int = 800
-        val h: Int = 800
-        val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+            val w: Int = 800
+            val h: Int = 800
+            val compare = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
 
-        for (x in 0 until w) {
-            for (y in 0 until h) {
-                compare.setPixel(
-                    x,
-                    y,
-                    Color.rgb(
-                        pixel_data[17].toInt(),
-                        pixel_data[18].toInt(),
-                        pixel_data[19].toInt()
+            for (x in 0 until w) {
+                for (y in 0 until h) {
+                    compare.setPixel(
+                            x,
+                            y,
+                            Color.rgb(
+                                    pixel_data[17].toInt(),
+                                    pixel_data[18].toInt(),
+                                    pixel_data[19].toInt()
+                            )
                     )
-                )
+                }
             }
-        }
-        img_view_car.setImageBitmap(compare)
+            img_view_car.setImageBitmap(compare)
 
         } catch (e: Exception) {
             println("出不來啦")
         }
+    }
 
+    override fun onPause() {
+        super.onPause()
+        change_color.cancel()
     }
 }

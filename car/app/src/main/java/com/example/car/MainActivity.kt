@@ -20,17 +20,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
     }
 
     fun sign_in(view: View) {
         Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, check::class.java)
         startActivity(intent)
-
     }
-
-
 }
 
 
