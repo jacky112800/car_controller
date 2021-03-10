@@ -1,10 +1,14 @@
 package com.example.car
 
 import android.content.Intent
+import android.media.MediaCodecList
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import java.net.Socket
 import java.io.OutputStream
@@ -17,9 +21,12 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
     }
 
     fun sign_in(view: View) {
@@ -27,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, check::class.java)
         startActivity(intent)
     }
+
+
+
 }
 
 

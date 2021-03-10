@@ -3,14 +3,10 @@ package com.example.car
 import java.io.DataInputStream
 import java.io.OutputStream
 import java.net.Socket
-import java.nio.charset.Charset
 import java.util.*
-import kotlin.concurrent.thread
-import kotlin.math.max
 
-
-open class client_th : Thread(){
-    companion object  {var get_data: UByteArray = UByteArray((800 * 800 * 3) + 16)}
+class client_th_H264 : Thread(){
+    companion object  {var get_data_H264: ByteArray = ByteArray((800 * 800 * 3) + 16)}
     override fun run() {
         val address = "192.168.0.44"
         val port = 5050
@@ -30,20 +26,11 @@ open class client_th : Thread(){
                 reader.close()
                 connection.close()
             }
-            get_data=img_bt.toUByteArray()
+            get_data_H264=img_bt
         }
-        println("aaa"+get_data)
-        println("bbb"+img_bt)
 
 //        img_bt= byteArrayOf()
 
         return
     }
-
-
 }
-
-
-
-
-

@@ -29,6 +29,7 @@ class camera : AppCompatActivity() {
     var change_color = Timer("change_color", false).schedule(10, 40) {
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
@@ -88,6 +89,8 @@ class camera : AppCompatActivity() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
             var pixel_data: UByteArray = UByteArray((800 * 800 * 3) + 16)
+//            var pixel_data: UByteArray = UByteArray((800 * 800 * 3) + 16)
+
             var th = client_th()
             th.start()
             pixel_data = client_th.get_data
