@@ -1,12 +1,13 @@
 package com.example.car
 
+import android.widget.ImageView
 import java.io.DataInputStream
 import java.io.OutputStream
 import java.net.Socket
 import java.util.*
 
-class client_th_H264 : Thread(){
-    companion object  {var get_data_H264: ByteArray = ByteArray((800 * 800 * 3) + 16)}
+class client_th_jpg : Thread(){
+    companion object  {var get_jpg:ByteArray= byteArrayOf()}
     override fun run() {
         val address = "192.168.0.44"
         val port = 5050
@@ -15,22 +16,27 @@ class client_th_H264 : Thread(){
         var data_in: DataInputStream = DataInputStream(connection.getInputStream())
         val reader: Scanner = Scanner(connection.getInputStream())
         val writer: OutputStream = connection.getOutputStream()
-        val length: Int = (800 * 800 * 3) + 16
-        var img_bt = ByteArray(length)
+
+        var img_bt: ByteArray
 
         while (connected) {
-            data_in.readFully(img_bt, 0, img_bt.size)
+            if (data_in.available()>0){
+                img_bt= ByteArray(data_in.readInt())
+                data_in.read(img_bt)
+                get_jpg=img_bt
 
-            if (img_bt[length - 1] != null) {
+            }
+
+
                 connected = false
                 reader.close()
                 connection.close()
-            }
-            get_data_H264=img_bt
+
+
         }
 
 //        img_bt= byteArrayOf()
 
-        return
+
     }
 }

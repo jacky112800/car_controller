@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.*
 import android.view.View
@@ -54,7 +55,8 @@ class camera : AppCompatActivity() {
 
         Thread {
             change_color = Timer("change_color", false).schedule(10, 40) {
-                draw_img()
+//                draw_img()
+                draw_jpg()
             }
         }.start()
     }
@@ -83,6 +85,25 @@ class camera : AppCompatActivity() {
 //        val button : Button =findViewById(R.id.right_left_btn)
 //        button.setBackgroundResource(R.drawable.round_btn_change_color)
 //    }
+fun draw_jpg() {
+    val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
+
+    try {
+
+        var th = client_th_jpg()
+        th.start()
+        var jpg_data = client_th_jpg.get_jpg
+        if (jpg_data.isNotEmpty()) {
+            val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+
+            img_view_car.setImageBitmap(bitmap)
+        }
+    } catch (e: Exception) {
+        println("出不來啦")
+    }
+}
+
+
 
 
     fun draw_img() {
