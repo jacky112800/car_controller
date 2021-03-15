@@ -9,7 +9,7 @@ import java.util.*
 class client_th_jpg : Thread(){
     companion object  {var get_jpg:ByteArray= byteArrayOf()}
     override fun run() {
-        val address = "192.168.0.44"
+        val address = "192.168.100.26"
         val port = 5050
         val connection: Socket = Socket(address, port)
         var connected: Boolean = true
