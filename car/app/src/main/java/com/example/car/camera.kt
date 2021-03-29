@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import kotlinx.android.synthetic.main.activity_camera.*
 import android.os.Vibrator
+import android.view.MotionEvent
 import java.util.Timer
 import kotlin.concurrent.schedule
 
@@ -29,7 +30,7 @@ class camera : AppCompatActivity() {
     val img_view_car = null
     var change_color = Timer("change_color", false).schedule(10, 40) {
     }
-
+    var car_run: Int = 0;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,10 +45,16 @@ class camera : AppCompatActivity() {
             m_angle_tv!!.setText(angle.toString())
             m_strength_tv!!.setText(strength.toString())
         }
-        right_left_btn.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-//            right_left_btn.setBackgroundResource(R.drawable.round_btn_change_color)
-                doVibrate()
+        right_left_btn.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN ->{ car_run = 1
+                    println(car_run)}
+                    MotionEvent.ACTION_UP -> {car_run = 0
+                    println(car_run)}
+                }
+
+                return onTouchEvent(event)
             }
         })
         //joystick
@@ -61,50 +68,46 @@ class camera : AppCompatActivity() {
         }.start()
     }
 
-    fun doVibrate() {
-        var button_vibrator = application.getSystemService(Service.VIBRATOR_SERVICE) as Vibrator
-
-        if (Build.VERSION.SDK_INT >= 26) {
-            button_vibrator.vibrate(
-                    VibrationEffect.createOneShot(
-                            200,
-                            VibrationEffect.DEFAULT_AMPLITUDE
-                    )
-            )
-        } else {
-            button_vibrator.vibrate(100)
-        }
-    }
-
     fun to_setting(view: View) {
         val intent_setting = Intent(this, setting::class.java)
         startActivity(intent_setting)
     }
 
-//    fun car_run (view: View){
-//        val button : Button =findViewById(R.id.right_left_btn)
-//        button.setBackgroundResource(R.drawable.round_btn_change_color)
-//    }
-fun draw_jpg() {
-    val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
+    fun draw_jpg() {
+        val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
-    try {
+        try {
 
-        var th = client_th_jpg()
-        th.start()
-        var jpg_data = client_th_jpg.get_jpg
-        if (jpg_data.isNotEmpty()) {
-            val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+            var th = client_th_jpg()
+            th.start()
+            var jpg_data = client_th_jpg.get_jpg
+            if (jpg_data.isNotEmpty()) {
+                val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
 
-            img_view_car.setImageBitmap(bitmap)
+                img_view_car.setImageBitmap(bitmap)
+            }
+        } catch (e: Exception) {
+            println("出不來啦")
         }
-    } catch (e: Exception) {
-        println("出不來啦")
     }
-}
 
+    fun draw_json() {
+        val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
+        try {
 
+            var th = client_th_jpg()
+            th.start()
+            var jpg_data = client_th_jpg.get_jpg
+            if (jpg_data.isNotEmpty()) {
+                val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+
+                img_view_car.setImageBitmap(bitmap)
+            }
+        } catch (e: Exception) {
+            println("出不來啦")
+        }
+    }
 
     fun draw_img() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
@@ -123,13 +126,13 @@ fun draw_jpg() {
             for (x in 0 until w) {
                 for (y in 0 until h) {
                     compare.setPixel(
-                            x,
-                            y,
-                            Color.rgb(
-                                    pixel_data[17].toInt(),
-                                    pixel_data[18].toInt(),
-                                    pixel_data[19].toInt()
-                            )
+                        x,
+                        y,
+                        Color.rgb(
+                            pixel_data[17].toInt(),
+                            pixel_data[18].toInt(),
+                            pixel_data[19].toInt()
+                        )
                     )
                 }
             }

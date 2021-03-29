@@ -36,7 +36,6 @@
         android:layout_height="102dp"
         android:background="@drawable/round_switch"
         android:contentDescription=""
-        android:onClick="car_run"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

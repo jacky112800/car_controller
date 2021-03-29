@@ -6,8 +6,10 @@ import java.io.OutputStream
 import java.net.Socket
 import java.util.*
 
-class client_th_jpg : Thread(){
-    companion object  {var get_jpg:ByteArray= byteArrayOf()}
+class client_th_json : Thread() {
+    companion object {
+        var get_json: ByteArray = byteArrayOf()
+    }
 
     override fun run() {
 
@@ -18,27 +20,19 @@ class client_th_jpg : Thread(){
         var data_in: DataInputStream = DataInputStream(connection.getInputStream())
         val reader: Scanner = Scanner(connection.getInputStream())
         val writer: OutputStream = connection.getOutputStream()
-        val close_message="ok"
+        val close_message = "ok"
         var img_bt: ByteArray
 
         while (connected) {
-            if (data_in.available()>0){
-                img_bt= ByteArray(data_in.readInt())
+            if (data_in.available() > 0) {
+                img_bt = ByteArray(data_in.readInt())
                 data_in.read(img_bt)
-                get_jpg=img_bt
-
             }
-
-
-                connected = false
-                reader.close()
-                connection.close()
-
-
+            connected = false
+            reader.close()
+            connection.close()
         }
-
 //        img_bt= byteArrayOf()
-
-
     }
+
 }
