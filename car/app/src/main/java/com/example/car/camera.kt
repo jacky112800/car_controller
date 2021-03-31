@@ -16,7 +16,8 @@ import io.github.controlwear.virtual.joystick.android.JoystickView
 import kotlinx.android.synthetic.main.activity_camera.*
 import android.os.Vibrator
 import android.view.MotionEvent
-import java.util.Timer
+import org.json.JSONObject
+import java.util.*
 import kotlin.concurrent.schedule
 
 
@@ -62,8 +63,9 @@ class camera : AppCompatActivity() {
 
         Thread {
             change_color = Timer("change_color", false).schedule(10, 40) {
-//                draw_img()
-                draw_jpg()
+//                draw_jpg()
+                draw_json()
+
             }
         }.start()
     }
@@ -96,12 +98,16 @@ class camera : AppCompatActivity() {
 
         try {
 
-            var th = client_th_jpg()
+            var th = client_th_json()
             th.start()
-            var jpg_data = client_th_jpg.get_jpg
-            if (jpg_data.isNotEmpty()) {
-                val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+            var json_data = client_th_json.get_json
 
+            if (json_data.isNotEmpty()) {
+                var img_json=json_data.decodeToString()
+                var js_ob=JSONObject(img_json)
+                var img_b64=js_ob.getString("img")
+                var jpg_data=Base64.getDecoder().decode(img_b64)
+                val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
                 img_view_car.setImageBitmap(bitmap)
             }
         } catch (e: Exception) {

@@ -11,7 +11,7 @@ class client_th_jpg : Thread(){
 
     override fun run() {
 
-        val address = "192.168.100.26"
+        val address = "192.168.100.22"
         val port = 5050
         val connection: Socket = Socket(address, port)
         var connected: Boolean = true
