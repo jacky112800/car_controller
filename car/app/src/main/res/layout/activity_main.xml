@@ -49,7 +49,7 @@
         android:hint="@string/account_tip"
         android:inputType="text"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/password_input"
+        app:layout_constraintBottom_toTopOf="@+id/ip_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.564"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,7 @@
         app:layout_constraintVertical_bias="0.871" />
 
     <EditText
-        android:id="@+id/password_input"
+        android:id="@+id/ip_input"
         android:layout_width="226dp"
         android:layout_height="32dp"
         android:autofillHints="no"
@@ -96,7 +96,7 @@
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/password_input"
+        app:layout_constraintEnd_toStartOf="@+id/ip_input"
         app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

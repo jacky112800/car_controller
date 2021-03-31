@@ -61,13 +61,13 @@ class camera : AppCompatActivity() {
         //joystick
 
 
-        Thread {
-            change_color = Timer("change_color", false).schedule(10, 40) {
-//                draw_jpg()
-                draw_json()
-
-            }
-        }.start()
+//        Thread {
+//            change_color = Timer("change_color", false).schedule(10, 40) {
+////                draw_jpg()
+//                draw_json()
+//
+//            }
+//        }.start()
     }
 
     fun to_setting(view: View) {
