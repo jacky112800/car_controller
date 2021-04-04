@@ -32,11 +32,12 @@ class camera : AppCompatActivity() {
     var change_color = Timer("change_color", false).schedule(10, 40) {
     }
     var car_run: Int = 0;
+    var th = client_th_json()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-
+        th.start()
 
         //joystick
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
@@ -49,10 +50,14 @@ class camera : AppCompatActivity() {
         right_left_btn.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
-                    MotionEvent.ACTION_DOWN ->{ car_run = 1
-                    println(car_run)}
-                    MotionEvent.ACTION_UP -> {car_run = 0
-                    println(car_run)}
+                    MotionEvent.ACTION_DOWN -> {
+                        car_run = 1
+                        println(car_run)
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        car_run = 0
+                        println(car_run)
+                    }
                 }
 
                 return onTouchEvent(event)
@@ -98,15 +103,14 @@ class camera : AppCompatActivity() {
 
         try {
 
-            var th = client_th_json()
-            th.start()
+
             var json_data = client_th_json.get_json
 
             if (json_data.isNotEmpty()) {
-                var img_json=json_data.decodeToString()
-                var js_ob=JSONObject(img_json)
-                var img_b64=js_ob.getString("img")
-                var jpg_data=Base64.getDecoder().decode(img_b64)
+                var img_json = json_data.decodeToString()
+                var js_ob = JSONObject(img_json)
+                var img_b64 = js_ob.getString("img")
+                var jpg_data = Base64.getDecoder().decode(img_b64)
                 val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
                 img_view_car.setImageBitmap(bitmap)
             }
@@ -132,13 +136,13 @@ class camera : AppCompatActivity() {
             for (x in 0 until w) {
                 for (y in 0 until h) {
                     compare.setPixel(
-                        x,
-                        y,
-                        Color.rgb(
-                            pixel_data[17].toInt(),
-                            pixel_data[18].toInt(),
-                            pixel_data[19].toInt()
-                        )
+                            x,
+                            y,
+                            Color.rgb(
+                                    pixel_data[17].toInt(),
+                                    pixel_data[18].toInt(),
+                                    pixel_data[19].toInt()
+                            )
                     )
                 }
             }

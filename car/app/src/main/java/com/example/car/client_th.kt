@@ -3,10 +3,7 @@ package com.example.car
 import java.io.DataInputStream
 import java.io.OutputStream
 import java.net.Socket
-import java.nio.charset.Charset
 import java.util.*
-import kotlin.concurrent.thread
-import kotlin.math.max
 
 
 open class client_th : Thread(){
@@ -32,10 +29,6 @@ open class client_th : Thread(){
             }
             get_data=img_bt.toUByteArray()
         }
-        println("aaa"+get_data)
-        println("bbb"+img_bt)
-
-//        img_bt= byteArrayOf()
 
         return
     }

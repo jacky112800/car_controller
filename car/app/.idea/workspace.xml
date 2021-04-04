@@ -8,10 +8,14 @@
   <component name="ChangeListManager">
     <list default="true" id="ceb9b463-d75e-4198-8d58-fe59687da524" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/client_th.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/client_th.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/client_th_json.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/client_th_json.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +38,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
+  <component name="KotlinCodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
+  </component>
   <component name="ProjectId" id="1iVVhwCOksL9OZEK7SupRhyF05m" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -45,7 +52,12 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+    <property name="settings.editor.selected.configurable" value="preferences.language.Kotlin" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
+      <recent name="com.example.car" />
+    </key>
   </component>
   <component name="RunManager" selected="Android App.car-app">
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
@@ -172,26 +184,34 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1617439098204">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1366.728@0.0.1366.728" timestamp="1617439098204" />
     <state x="245" y="0" key="CommitChangelistDialog2" timestamp="1612545539364">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="245" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1612545539364" />
-    <state width="661" height="174" key="GridCell.Tab.0.bottom" timestamp="1612547008975">
+    <state width="661" height="17" key="GridCell.Tab.0.bottom" timestamp="1617445020781">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="174" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1612547008975" />
-    <state width="661" height="174" key="GridCell.Tab.0.center" timestamp="1612547008975">
+    <state width="661" height="17" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
+    <state width="661" height="17" key="GridCell.Tab.0.center" timestamp="1617445020781">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="174" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1612547008975" />
-    <state width="661" height="174" key="GridCell.Tab.0.left" timestamp="1612547008975">
+    <state width="661" height="17" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
+    <state width="661" height="17" key="GridCell.Tab.0.left" timestamp="1617445020781">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="174" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1612547008975" />
-    <state width="661" height="174" key="GridCell.Tab.0.right" timestamp="1612547008975">
+    <state width="661" height="17" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
+    <state width="661" height="17" key="GridCell.Tab.0.right" timestamp="1617445020781">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="174" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1612547008975" />
+    <state width="661" height="17" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
+    <state x="184" y="0" key="SettingsEditor" timestamp="1617548133063">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="184" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1617548133063" />
     <state x="482" y="280" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1612545872309">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
