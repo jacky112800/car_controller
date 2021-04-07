@@ -37,7 +37,7 @@ class camera : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-        th.start()
+//        th.start()
 
         //joystick
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
@@ -47,6 +47,7 @@ class camera : AppCompatActivity() {
             m_angle_tv!!.setText(angle.toString())
             m_strength_tv!!.setText(strength.toString())
         }
+
         right_left_btn.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
@@ -59,20 +60,18 @@ class camera : AppCompatActivity() {
                         println(car_run)
                     }
                 }
-
                 return onTouchEvent(event)
             }
         })
+
         //joystick
-
-
 //        Thread {
 //            change_color = Timer("change_color", false).schedule(10, 40) {
-////                draw_jpg()
+//                draw_jpg()
 //                draw_json()
-//
 //            }
 //        }.start()
+
     }
 
     fun to_setting(view: View) {
@@ -84,13 +83,11 @@ class camera : AppCompatActivity() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
         try {
-
             var th = client_th_jpg()
             th.start()
             var jpg_data = client_th_jpg.get_jpg
             if (jpg_data.isNotEmpty()) {
                 val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
-
                 img_view_car.setImageBitmap(bitmap)
             }
         } catch (e: Exception) {
@@ -102,8 +99,6 @@ class camera : AppCompatActivity() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
         try {
-
-
             var json_data = client_th_json.get_json
 
             if (json_data.isNotEmpty()) {
@@ -136,13 +131,13 @@ class camera : AppCompatActivity() {
             for (x in 0 until w) {
                 for (y in 0 until h) {
                     compare.setPixel(
-                            x,
-                            y,
-                            Color.rgb(
-                                    pixel_data[17].toInt(),
-                                    pixel_data[18].toInt(),
-                                    pixel_data[19].toInt()
-                            )
+                        x,
+                        y,
+                        Color.rgb(
+                            pixel_data[17].toInt(),
+                            pixel_data[18].toInt(),
+                            pixel_data[19].toInt()
+                        )
                     )
                 }
             }

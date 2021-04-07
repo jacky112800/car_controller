@@ -10,6 +10,7 @@ import kotlin.concurrent.thread
 class client_th_string : Thread() {
     companion object {
         var get_cmd: ByteArray = byteArrayOf()
+        var get_frame:ByteArray= byteArrayOf()
     }
 
     var send_json = JSONObject()
@@ -18,18 +19,20 @@ class client_th_string : Thread() {
     val port = 5050
     val connection: Socket = Socket(address, port)
     var connected: Boolean = true
+    var send_check = false
     var data_in: DataInputStream = DataInputStream(connection.getInputStream())
     var data_out: DataOutputStream = DataOutputStream(connection.getOutputStream())
     val reader: Scanner = Scanner(connection.getInputStream())
 
     override fun run() {
-
-        if (connected) {
-            data_out.write(tojson("ready to receive"))
-        }
         thread {
             while (connected) {
                 receive_data()
+            }
+        }
+        thread {
+            while (send_check) {
+                receive_cmd()
             }
         }
     }
@@ -51,6 +54,25 @@ class client_th_string : Thread() {
             reader.close()
             connection.close()
         }
+        get_frame = img_bt
+    }
+    fun receive_cmd() {
+        var img_bt: ByteArray = ByteArray(0)
+        var lenght: Int
+        lenght = data_in.readInt()
+        img_bt = ByteArray(lenght)
+
+        if (lenght > 0) {
+            data_in.readFully(img_bt, 0, img_bt.size)
+            print(img_bt.decodeToString())
+        }
+
+        if (img_bt[img_bt.size - 1] != null) {
+            send_check = false
+            println("ok")
+            reader.close()
+            connection.close()
+        }
         get_cmd = img_bt
     }
 
@@ -63,5 +85,27 @@ class client_th_string : Thread() {
         val j_to_b = send_json.toString().toByteArray()
         return j_to_b
     }
+
+    fun send_EXIT(input: String) {
+        send_json.put("EXIT", input)
+        val j_to_b = send_json.toString().toByteArray()
+        data_out.write(j_to_b)
+        send_check = true
+    }
+
+    fun send_LOGIN(input: String) {
+        send_json.put("LOGIN", input)
+        val j_to_b = send_json.toString().toByteArray()
+        data_out.write(j_to_b)
+        send_check = true
+    }
+
+    fun send_CONFIG(input: String) {
+        send_json.put("CONFIG", input)
+        val j_to_b = send_json.toString().toByteArray()
+        data_out.write(j_to_b)
+        send_check = true
+    }
+
 
 }

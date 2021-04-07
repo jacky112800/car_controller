@@ -16,13 +16,13 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         var ip: String = ""
+        var socket_check=0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         text_ent()
-        th.start()
     }
 
     fun text_ent() {
@@ -40,10 +40,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun send_socket() {
-
-    }
-
     fun sign_in() {
         Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, check::class.java)
@@ -56,10 +52,15 @@ class MainActivity : AppCompatActivity() {
         login_json.put("LOGIN_accout", accout)
         login_json.put("LOGIN_ip", ip)
         println(login_json)
-        th.send_data(login_json.toString().toByteArray())
+
+        try {
+            th.start()
+            th.send_data(login_json.toString().toByteArray())
+        } catch (e: Exception) {
+            Toast.makeText(this, "帳號或IP位置不正確", Toast.LENGTH_SHORT).show()
+            socket_check=1
+        }
     }
-
-
 }
 
 

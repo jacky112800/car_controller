@@ -10,6 +10,7 @@ class client_th_json : Thread() {
     companion object {
         var get_json: ByteArray = byteArrayOf()
     }
+
     var send_json = JSONObject()
 
     override fun run() {
@@ -18,12 +19,12 @@ class client_th_json : Thread() {
         val connection: Socket = Socket(address, port)
         var connected: Boolean = true
         var data_in: DataInputStream = DataInputStream(connection.getInputStream())
-        var data_out:DataOutputStream= DataOutputStream(connection.getOutputStream())
+        var data_out: DataOutputStream = DataOutputStream(connection.getOutputStream())
         val reader: Scanner = Scanner(connection.getInputStream())
         var img_bt: ByteArray = ByteArray(0)
         var lenght: Int
 
-        if (connected){
+        if (connected) {
             data_out.write(tojson("ready to receive"))
         }
 
@@ -47,9 +48,10 @@ class client_th_json : Thread() {
         }
 
     }
-    fun tojson(frame: String):ByteArray {
-        send_json.put("FRAME",frame )
-        val j_to_b= send_json.toString().toByteArray()
+
+    fun tojson(frame: String): ByteArray {
+        send_json.put("FRAME", frame)
+        val j_to_b = send_json.toString().toByteArray()
         return j_to_b
     }
 
