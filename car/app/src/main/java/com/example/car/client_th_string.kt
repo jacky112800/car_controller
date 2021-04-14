@@ -10,7 +10,7 @@ import kotlin.concurrent.thread
 class client_th_string : Thread() {
     companion object {
         var get_cmd: ByteArray = byteArrayOf()
-        var get_frame:ByteArray= byteArrayOf()
+        var get_data: ByteArray = byteArrayOf()
     }
 
     var send_json = JSONObject()
@@ -25,16 +25,11 @@ class client_th_string : Thread() {
     val reader: Scanner = Scanner(connection.getInputStream())
 
     override fun run() {
-        thread {
-            while (connected) {
-                receive_data()
-            }
+
+        while (connected) {
+            receive_data()
         }
-        thread {
-            while (send_check) {
-                receive_cmd()
-            }
-        }
+
     }
 
     fun receive_data() {
@@ -54,30 +49,17 @@ class client_th_string : Thread() {
             reader.close()
             connection.close()
         }
-        get_frame = img_bt
-    }
-    fun receive_cmd() {
-        var img_bt: ByteArray = ByteArray(0)
-        var lenght: Int
-        lenght = data_in.readInt()
-        img_bt = ByteArray(lenght)
-
-        if (lenght > 0) {
-            data_in.readFully(img_bt, 0, img_bt.size)
-            print(img_bt.decodeToString())
-        }
-
-        if (img_bt[img_bt.size - 1] != null) {
-            send_check = false
-            println("ok")
-            reader.close()
-            connection.close()
-        }
-        get_cmd = img_bt
+        get_data = img_bt
     }
 
     fun send_data(send_cmd: ByteArray) {
         data_out.write(send_cmd)
+    }
+
+    fun sent_cmd(cmd: String) {
+        send_json.put("CMD", cmd)
+        val j_to_b = send_json.toString().toByteArray()
+        send_data(j_to_b)
     }
 
     fun tojson(frame: String): ByteArray {

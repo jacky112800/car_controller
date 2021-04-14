@@ -7,15 +7,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
+import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
 
     var accout_car: String = ""
-    var th = client_th_string()
 
     companion object {
-        var ip: String = ""
+        var ip: String = "192.168.64.1"
         var socket_check=0
     }
 
@@ -30,10 +30,11 @@ class MainActivity : AppCompatActivity() {
         account_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         start_btn.setOnClickListener {
             if (ip_input.text.isNullOrEmpty() && account_input.text.isNullOrEmpty()) {
-                println("error")
+                Toast.makeText(this, "輸入錯誤", Toast.LENGTH_SHORT).show()
             } else {
                 accout_car = account_input.text.toString()
-                ip = ip_input.text.toString()
+//                ip = ip_input.text.toString()
+                println(ip)
                 tojson(accout_car, ip)
                 sign_in()
             }
@@ -48,18 +49,19 @@ class MainActivity : AppCompatActivity() {
 
     var login_json = JSONObject()
     fun tojson(accout: String, ip: String) {
-
+        login_json.put("CMD", "LOGIN")
         login_json.put("LOGIN_accout", accout)
         login_json.put("LOGIN_ip", ip)
         println(login_json)
 
-        try {
+        thread {
+            var th = client_th_string()
             th.start()
-            th.send_data(login_json.toString().toByteArray())
-        } catch (e: Exception) {
-            Toast.makeText(this, "帳號或IP位置不正確", Toast.LENGTH_SHORT).show()
-            socket_check=1
+//            th.send_data(login_json.toString().toByteArray())
         }
+//            Toast.makeText(this, "帳號或IP位置不正確", Toast.LENGTH_SHORT).show()
+//            socket_check=1
+
     }
 }
 

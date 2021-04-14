@@ -19,6 +19,7 @@ import android.view.MotionEvent
 import org.json.JSONObject
 import java.util.*
 import kotlin.concurrent.schedule
+import kotlin.concurrent.thread
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -29,20 +30,24 @@ class camera : AppCompatActivity() {
     private var m_strength_tv: TextView? = null
     var img_byte = null
     val img_view_car = null
-    var change_color = Timer("change_color", false).schedule(10, 40) {
-    }
     var car_run: Int = 0;
     var th = client_th_json()
+    var receive_check=true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-//        th.start()
-
+        th.start()
+        thread {
+            while (receive_check) {
+                draw_json()
+            }
+        }
         //joystick
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
         m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
         val joystick = findViewById<JoystickView>(R.id.joystickView_car)
+
         joystick.setOnMoveListener { angle, strength ->
             m_angle_tv!!.setText(angle.toString())
             m_strength_tv!!.setText(strength.toString())
@@ -63,14 +68,6 @@ class camera : AppCompatActivity() {
                 return onTouchEvent(event)
             }
         })
-
-        //joystick
-//        Thread {
-//            change_color = Timer("change_color", false).schedule(10, 40) {
-//                draw_jpg()
-//                draw_json()
-//            }
-//        }.start()
 
     }
 
@@ -99,7 +96,7 @@ class camera : AppCompatActivity() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
         try {
-            var json_data = client_th_json.get_json
+            var json_data = client_th_string.get_data
 
             if (json_data.isNotEmpty()) {
                 var img_json = json_data.decodeToString()
@@ -109,6 +106,7 @@ class camera : AppCompatActivity() {
                 val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
                 img_view_car.setImageBitmap(bitmap)
             }
+
         } catch (e: Exception) {
             println("出不來啦")
         }
@@ -150,6 +148,6 @@ class camera : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        change_color.cancel()
+        receive_check=false
     }
 }
