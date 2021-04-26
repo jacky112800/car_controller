@@ -30,15 +30,25 @@ class camera : AppCompatActivity() {
     private var m_strength_tv: TextView? = null
     var img_byte = null
     val img_view_car = null
-    var car_run: Int = 0;
-    var th = client_th_json()
-    var receive_check=true
+    var car_run: Int = 0
+    var th :client_th_string?= null
+
+    init {
+        thread {
+            th = client_th_string()
+            th?.start()
+        }
+    }
+    var receive_check = false
+    var angle_json_L = 0
+    var angle_json_R = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-        th.start()
+        receive_check = true
         thread {
+            th?.send_cmd("FRAME")
             while (receive_check) {
                 draw_json()
             }
@@ -48,26 +58,48 @@ class camera : AppCompatActivity() {
         m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
         val joystick = findViewById<JoystickView>(R.id.joystickView_car)
 
-        joystick.setOnMoveListener { angle, strength ->
-            m_angle_tv!!.setText(angle.toString())
-            m_strength_tv!!.setText(strength.toString())
-        }
-
-        right_left_btn.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> {
-                        car_run = 1
-                        println(car_run)
-                    }
-                    MotionEvent.ACTION_UP -> {
-                        car_run = 0
-                        println(car_run)
-                    }
+            joystick.setOnMoveListener { angle, strength ->
+                m_angle_tv!!.setText(angle.toString())
+                m_strength_tv!!.setText(strength.toString())
+                if ((angle > 90) && (angle < 270)) {
+                    angle_json_L = 1
+                } else {
+                    angle_json_L = 0
+                    angle_json_R = 0
                 }
-                return onTouchEvent(event)
+
+                if (((angle > 0) && (angle < 90)) || ((angle > 270) && (angle < 360))) {
+                    angle_json_R = 1
+                } else {
+                    angle_json_L = 0
+                    angle_json_R = 0
+                }
             }
-        })
+
+
+
+        right_left_btn.setOnTouchListener(
+            object : View.OnTouchListener {
+                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                    when (event?.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            car_run = 1
+                            println(car_run)
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            car_run = 0
+                            println(car_run)
+                        }
+                    }
+                    thread {
+                        if (car_run == 1) {
+                            th?.send_move("MOVE", angle_json_L, angle_json_R)
+
+                        }
+                    }
+                    return onTouchEvent(event)
+                }
+            })
 
     }
 
@@ -148,6 +180,6 @@ class camera : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        receive_check=false
+        th?.close()
     }
 }

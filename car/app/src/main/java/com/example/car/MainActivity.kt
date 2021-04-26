@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     var accout_car: String = ""
 
     companion object {
-        var ip: String = "192.168.64.1"
+        var ip: String = ""
         var socket_check=0
     }
 
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "輸入錯誤", Toast.LENGTH_SHORT).show()
             } else {
                 accout_car = account_input.text.toString()
-//                ip = ip_input.text.toString()
+                ip = ip_input.text.toString()
                 println(ip)
                 tojson(accout_car, ip)
                 sign_in()
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sign_in() {
-        Toast.makeText(this, "hi", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "welcome", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, check::class.java)
         startActivity(intent)
     }
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         thread {
             var th = client_th_string()
             th.start()
-//            th.send_data(login_json.toString().toByteArray())
+            th.send_data(login_json.toString().toByteArray())
         }
 //            Toast.makeText(this, "帳號或IP位置不正確", Toast.LENGTH_SHORT).show()
 //            socket_check=1
