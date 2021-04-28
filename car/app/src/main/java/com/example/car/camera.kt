@@ -52,6 +52,12 @@ class camera : AppCompatActivity() {
             while (receive_check) {
                 draw_json()
             }
+            while (true){
+                Thread.sleep(100)
+                if (car_run == 1) {
+                    th?.send_move("MOVE", angle_json_L, angle_json_R)
+                }
+            }
         }
         //joystick
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
@@ -89,12 +95,6 @@ class camera : AppCompatActivity() {
                         MotionEvent.ACTION_UP -> {
                             car_run = 0
                             println(car_run)
-                        }
-                    }
-                    thread {
-                        if (car_run == 1) {
-                            th?.send_move("MOVE", angle_json_L, angle_json_R)
-
                         }
                     }
                     return onTouchEvent(event)
@@ -180,6 +180,8 @@ class camera : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        th?.send_cmd("WAIT")
+        Thread.sleep(100)
         th?.close()
     }
 }

@@ -3,10 +3,10 @@
     <string name="start_title">無人辨識車控制器</string>
     <string name="start_button">登入</string>
     <string name="start_exit">離開</string>
-    <string name="account">帳號:</string>
+    <string name="account">密碼:</string>
     <string name="password">IP:</string>
-    <string name="account_tip">請輸入帳號</string>
-    <string name="password_tip">請輸入IP位置</string>
+    <string name="account_tip">請輸入密碼</string>
+    <string name="password_tip">請輸入IP:PROT</string>
     <string name="verification">驗證</string>
     <string name="verification_tip">驗證</string>
     <string name="tap_start">點擊以進入操作介面</string>

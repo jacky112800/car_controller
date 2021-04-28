@@ -16,7 +16,7 @@ class client_th_string : Thread() {
     var send_json = JSONObject()
 
     val address = MainActivity.ip
-    val port = 5050
+    val port = MainActivity.port_car.toInt()
     val connection: Socket = Socket(address, port)
     var connected: Boolean = true
     var send_check = false

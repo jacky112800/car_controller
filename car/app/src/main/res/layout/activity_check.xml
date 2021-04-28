@@ -6,32 +6,15 @@
     android:layout_height="match_parent"
     android:background="#D0000000">
 
-    <EditText
-        android:id="@+id/editTextNumberDecimal3"
-        android:layout_width="262dp"
-        android:layout_height="51dp"
-        android:autofillHints="no"
-        android:background="#FFFFFF"
-        android:ems="10"
-        android:hint="@string/verification_tip"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.461" />
-
-    <Button
-        android:id="@+id/Verification_btn"
+    <TextView
+        android:id="@+id/wait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
-        android:background="#2196F3"
-        android:onClick="check_func"
-        android:text="@string/verification"
-        android:textSize="24sp"
+        android:text="連線驗證中請稍後"
+        android:textColor="#FF9800"
+        android:textSize="33sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
