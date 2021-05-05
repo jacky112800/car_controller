@@ -57,7 +57,7 @@ class client_th_string : Thread() {
         send_data(j_to_b)
     }
 
-    fun send_move(cmd: String, L: Int, R: Int) {
+    fun send_move(cmd: String, L: Double, R: Double) {
         send_json.put("CMD", cmd)
         send_json.put("MOVE_L", L)
         send_json.put("MOVE_R", R)

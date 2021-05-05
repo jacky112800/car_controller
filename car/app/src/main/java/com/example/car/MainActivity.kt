@@ -2,12 +2,12 @@ package com.example.car
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
-import java.math.BigInteger
 import java.net.ConnectException
 import kotlin.concurrent.thread
 
@@ -27,18 +27,15 @@ class MainActivity : AppCompatActivity() {
         text_ent()
 
     }
-    fun get_wifi_ip(){
 
-    }
     fun text_ent() {
         ip_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         PWD_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         start_btn.setOnClickListener {
-            get_wifi_ip()
+
             if (ip_input.text.isNullOrEmpty() && PWD_input.text.isNullOrEmpty()) {
                 Toast.makeText(this, "請勿輸入空白", Toast.LENGTH_SHORT).show()
             } else {
-
                 PWD = PWD_input.text.toString()
                 try {
                     val ip_list = ip_input.text.toString().split(":")
@@ -73,8 +70,10 @@ class MainActivity : AppCompatActivity() {
                 th.start()
                 th.send_data(login_json.toString().toByteArray())
             } catch (e: ConnectException) {
+                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("請檢查主機是否異常")
+                Looper.loop()
             }
         }
     }

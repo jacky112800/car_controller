@@ -13,7 +13,7 @@ import java.util.*
 import kotlin.concurrent.thread
 
 class check : AppCompatActivity() {
-    var socket_check = 0
+    var socket_check = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
