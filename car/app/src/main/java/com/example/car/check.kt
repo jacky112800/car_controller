@@ -2,6 +2,7 @@ package com.example.car
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -13,7 +14,7 @@ import java.util.*
 import kotlin.concurrent.thread
 
 class check : AppCompatActivity() {
-    var socket_check = 1
+    var socket_check = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
@@ -22,11 +23,12 @@ class check : AppCompatActivity() {
             try {
                 var th = client_th_string()
                 th.start()
-                var login_check = client_th_string.get_data.decodeToString()
+                var login_check = client_th_string.get_data
                 var js_ob = JSONObject(login_check)
                 var log_info = js_ob.getString("CMD")
+
                 if (log_info == "LOG_INFO") {
-                    var log_ch = js_ob.getString("LOGIN").toBoolean()
+                    var log_ch = js_ob.getString("VERIFY").toBoolean()
                     if (log_ch) {
                         socket_check = 1
                     } else {
@@ -34,8 +36,12 @@ class check : AppCompatActivity() {
                     }
                 }
             } catch (e: ConnectException) {
+                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+                Looper.loop()
                 println("請檢查主機是否異常")
+
+
             }
         }
 

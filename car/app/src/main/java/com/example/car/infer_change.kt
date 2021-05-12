@@ -1,49 +1,36 @@
 package com.example.car
 
-import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_infer_change.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import java.net.ConnectException
 import kotlin.concurrent.thread
 
-
-class MainActivity : AppCompatActivity() {
-
-    var PWD: String = ""
-
-    companion object {
-        var ip: String = ""
-        var port_car = ""
-    }
-
+class infer_change : AppCompatActivity() {
+    var infer_h = ""
+    var infer_w = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        text_ent()
+        setContentView(R.layout.activity_infer_change)
 
-    }
-
-    fun text_ent() {
-        ip_input.inputType = EditorInfo.TYPE_CLASS_TEXT
-        PWD_input.inputType = EditorInfo.TYPE_CLASS_TEXT
+        infer_h_text.inputType = EditorInfo.TYPE_CLASS_TEXT
+        infer_w_text.inputType = EditorInfo.TYPE_CLASS_TEXT
 
         start_btn.setOnClickListener {
-            if (ip_input.text.isNullOrEmpty() && PWD_input.text.isNullOrEmpty()) {
+            if (infer_h_text.text.isNullOrEmpty() && infer_w_text.text.isNullOrEmpty()) {
                 Toast.makeText(this, "請勿輸入空白", Toast.LENGTH_SHORT).show()
             } else {
-                PWD = PWD_input.text.toString()
+                infer_h = infer_h_text.text.toString()
+                infer_w = infer_w_text.text.toString()
+
                 try {
-                    val ip_list = ip_input.text.toString().split(":")
-                    ip = ip_list[0]
-                    port_car = ip_list[1]
-                    println(ip + "/n" + port_car)
-                    tojson(PWD)
-                    sign_in()
+
+
                 } catch (e: Exception) {
                     Looper.prepare()
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
@@ -51,14 +38,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
-
-    }
-
-    fun sign_in() {
-        Toast.makeText(this, "welcome", Toast.LENGTH_SHORT).show()
-        val intent = Intent(this, check::class.java)
-        startActivity(intent)
     }
 
     var login_json = JSONObject()
@@ -82,5 +61,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-
-

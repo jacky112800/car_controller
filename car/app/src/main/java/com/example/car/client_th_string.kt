@@ -9,8 +9,7 @@ import kotlin.concurrent.thread
 
 class client_th_string : Thread() {
     companion object {
-        var get_cmd: ByteArray = byteArrayOf()
-        var get_data: ByteArray = byteArrayOf()
+        var get_data: String = ""
     }
 
     var send_json = JSONObject()
@@ -19,15 +18,17 @@ class client_th_string : Thread() {
     val port = MainActivity.port_car.toInt()
     val connection: Socket = Socket(address, port)
     var connected: Boolean = true
-    var send_check = false
     var data_in: DataInputStream = DataInputStream(connection.getInputStream())
     var data_out: DataOutputStream = DataOutputStream(connection.getOutputStream())
     val reader: Scanner = Scanner(connection.getInputStream())
 
     override fun run() {
 
-        while (connected) {
-            receive_data()
+        thread(connected) {
+
+            while (connected) {
+                receive_data()
+            }
         }
 
     }
@@ -46,35 +47,39 @@ class client_th_string : Thread() {
         if (img_bt[img_bt.size - 1] != null) {
             connected = false
             println("ok")
-
         }
-        get_data = img_bt
+
+        get_data = img_bt.decodeToString()
+
     }
 
     fun send_cmd(cmd: String) {
         send_json.put("CMD", cmd)
-        val j_to_b = send_json.toString().toByteArray()
+        val j_to_b = send_json.toString().encodeToByteArray()
         send_data(j_to_b)
     }
 
-    fun send_move(cmd: String, L: Double, R: Double) {
-        send_json.put("CMD", cmd)
-        send_json.put("MOVE_L", L)
-        send_json.put("MOVE_R", R)
+    fun send_move(L: Double, R: Double) {
+        send_json.put("CMD", "MOV")
+        send_json.put("L", L)
+        send_json.put("R", R)
         println(this.send_json)
-        val j_to_b = send_json.toString().toByteArray()
+        val j_to_b = send_json.toString().encodeToByteArray()
         send_data(j_to_b)
     }
 
     fun send_data(send_cmd: ByteArray) {
-        thread {
+        connected=false
+        thread(!connected) {
             data_out.writeInt(send_cmd.size)
             data_out.write(send_cmd)
         }
+        connected=true
     }
 
     fun close() {
         reader.close()
         connection.close()
     }
+
 }
