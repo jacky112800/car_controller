@@ -7,7 +7,7 @@
     <string name="password">IP:</string>
     <string name="account_tip">請輸入密碼</string>
     <string name="password_tip">請輸入IP:PROT</string>
-    <string name="verification">驗證</string>
+    <string name="verification">連線驗證中請稍後</string>
     <string name="verification_tip">驗證</string>
     <string name="tap_start">點擊以進入操作介面</string>
     <string name="item_select">辨識物件選擇</string>

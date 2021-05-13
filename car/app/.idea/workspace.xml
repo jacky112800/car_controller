@@ -7,14 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ceb9b463-d75e-4198-8d58-fe59687da524" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/client_th.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/client_th.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/client_th_json.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/client_th_json.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_check.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_check.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,6 +31,9 @@
       </state>
     </system>
   </component>
+  <component name="GenerateSignedApkSettings">
+    <option name="BUILD_TARGET_KEY" value="apk" />
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
@@ -49,6 +48,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ApkExportedModule" value="car-app" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -57,6 +57,10 @@
   <component name="RecentsManager">
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
       <recent name="com.example.car" />
+    </key>
+    <key name="CreateKotlinClassDialog.RecentsKey">
+      <recent name="com.example.car" />
+      <recent name="io.github.controlwear.virtual.joystick" />
     </key>
   </component>
   <component name="RunManager" selected="Android App.car-app">
@@ -184,30 +188,38 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1617439098204">
+    <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1620918495977">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1366.728@0.0.1366.728" timestamp="1617439098204" />
+    <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1366.728@0.0.1366.728" timestamp="1620918495977" />
+    <state x="413" y="109" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1620918587289">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="413" y="109" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728@0.0.1366.728" timestamp="1620918587289" />
     <state x="245" y="0" key="CommitChangelistDialog2" timestamp="1612545539364">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="245" y="0" key="CommitChangelistDialog2/0.0.1366.728@0.0.1366.728" timestamp="1612545539364" />
-    <state width="661" height="17" key="GridCell.Tab.0.bottom" timestamp="1617445020781">
+    <state x="462" y="118" key="FileChooserDialogImpl" timestamp="1620923823680">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="17" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
-    <state width="661" height="17" key="GridCell.Tab.0.center" timestamp="1617445020781">
+    <state x="462" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1620923823680" />
+    <state width="1322" height="155" key="GridCell.Tab.0.bottom" timestamp="1620924016978">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="17" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
-    <state width="661" height="17" key="GridCell.Tab.0.left" timestamp="1617445020781">
+    <state width="1322" height="155" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1620924016978" />
+    <state width="1322" height="155" key="GridCell.Tab.0.center" timestamp="1620924016978">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="17" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
-    <state width="661" height="17" key="GridCell.Tab.0.right" timestamp="1617445020781">
+    <state width="1322" height="155" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1620924016978" />
+    <state width="1322" height="155" key="GridCell.Tab.0.left" timestamp="1620924016978">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="661" height="17" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1617445020781" />
+    <state width="1322" height="155" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1620924016978" />
+    <state width="1322" height="155" key="GridCell.Tab.0.right" timestamp="1620924016978">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="1322" height="155" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1620924016978" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1617548133063">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
@@ -216,5 +228,9 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="482" y="280" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.728@0.0.1366.728" timestamp="1612545872309" />
+    <state x="339" y="157" key="run.anything.popup" timestamp="1620919366355">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="339" y="157" key="run.anything.popup/0.0.1366.728@0.0.1366.728" timestamp="1620919366355" />
   </component>
 </project>

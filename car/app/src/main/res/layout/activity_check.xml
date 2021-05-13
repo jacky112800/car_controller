@@ -10,7 +10,7 @@
         android:id="@+id/wait"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="連線驗證中請稍後"
+        android:text="@string/verification"
         android:textColor="#FF9800"
         android:textSize="33sp"
         app:layout_constraintBottom_toBottomOf="parent"

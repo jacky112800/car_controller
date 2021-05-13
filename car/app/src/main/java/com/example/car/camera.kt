@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 import kotlin.concurrent.schedule
@@ -188,7 +189,7 @@ class camera : AppCompatActivity() {
 //                }
 //            }
 
-        } catch (e: Exception) {
+        } catch (e: JSONException) {
             println("出不來啦")
         }
     }
