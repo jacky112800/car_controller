@@ -1,10 +1,10 @@
 package com.example.car
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import org.json.JSONException
 import org.json.JSONObject
+import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
@@ -34,8 +36,14 @@ class camera : AppCompatActivity() {
             try {
                 th = client_th_string()
                 th?.start()
-            } catch (e: Exception) {
-
+            } catch (e: ConnectException) {
+                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+                println("請檢查主機是否異常")
+                Looper.loop()
+            }catch(e: SocketTimeoutException){
+                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+                println("Time out 請檢查主機是否異常")
+                Looper.loop()
             }
         }
     }
@@ -148,6 +156,7 @@ class camera : AppCompatActivity() {
                 draw_json()
             }
         }
+
         thread {
             while (receive_check) {
                 Thread.sleep(100)
@@ -167,48 +176,45 @@ class camera : AppCompatActivity() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
 
         try {
+            //將全域變數的圖像資料取用
             var json_data = client_th_string.get_data
 
             var js_ob = JSONObject(json_data)
-
+            //如果CMD標籤內的字串為FRAME時
+            //將IMAGE內的圖像資料先Base64解碼
+            //再以裡面的圖像資料做成bitmap
             if (js_ob.getString("CMD") == "FRAME") {
                 var img_b64 = js_ob.getString("IMAGE")
                 var jpg_data = Base64.getDecoder().decode(img_b64)
                 val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+                //如果bitmap不為空就顯示圖片
+                //由於bitmap為空會產生錯誤,所以必須要有這一步驟
                 if (bitmap != null) {
                     img_view_car.setImageBitmap(bitmap)
                 }
             }
 
-//            if (js_ob!=null) {
-//                var img_b64 = js_ob.getString("img")
-//                var jpg_data = Base64.getDecoder().decode(img_b64)
-//                val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
-//                if (bitmap != null) {
-//                    img_view_car.setImageBitmap(bitmap)
-//                }
-//            }
-
         } catch (e: JSONException) {
-            println("出不來啦")
+            println("錯誤")
         }
     }
-    var count=0
-    var back_cd=Timer().schedule(0,5000){
-        count=0
 
+    var count = 0
+    var back_cd = Timer().schedule(0, 5000) {
+        count = 0
     }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         back_cd.run()
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (count==0) {
+            if (count == 0) {
                 Toast.makeText(this, "按三次即關閉APP", Toast.LENGTH_SHORT).show()
             }
-            if (count==1) {
+            if (count == 1) {
                 Toast.makeText(this, "再按一次即關閉APP", Toast.LENGTH_SHORT).show()
             }
-            if (count==2) {
+            if (count == 2) {
                 close_app()
             }
             count++
@@ -216,11 +222,12 @@ class camera : AppCompatActivity() {
         }
         return super.onKeyDown(keyCode, event)
     }
-    fun close_app(){
+
+    fun close_app() {
 
         to_stream(false)
         Thread.sleep(100)
-        receive_check=false
+        receive_check = false
         Thread.sleep(100)
         th?.send_cmd("LOGOUT")
         Thread.sleep(100)
@@ -231,9 +238,8 @@ class camera : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         to_stream(false)
-        receive_check=false
+        receive_check = false
     }
-
 
 
     fun to_stream(str_stream: Boolean) {

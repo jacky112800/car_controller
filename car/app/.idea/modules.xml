@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app.iml" group="car/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/611636659/car.iml" filepath="$PROJECT_DIR$/.idea/modules/611636659/car.iml" group="car" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/car-app.iml" filepath="$PROJECT_DIR$/.idea/modules/car-app.iml" group="car/app" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1182940330/car_controller-car.iml" filepath="$PROJECT_DIR$/.idea/modules/-1182940330/car_controller-car.iml" group="car" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1179615090/io.github.controlwear-virtualjoystick.iml" filepath="$PROJECT_DIR$/.idea/modules/-1179615090/io.github.controlwear-virtualjoystick.iml" group="car/virtualjoystick" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1778829077/virtualjoystick.iml" filepath="$PROJECT_DIR$/.idea/modules/-1778829077/virtualjoystick.iml" group="car/virtualjoystick" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1182940330/car.iml" filepath="$PROJECT_DIR$/.idea/modules/-1182940330/car.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/car.app.iml" filepath="$PROJECT_DIR$/.idea/modules/car.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1179615090/car.virtualjoystick.iml" filepath="$PROJECT_DIR$/.idea/modules/-1179615090/car.virtualjoystick.iml" />
     </modules>
   </component>
 </project>

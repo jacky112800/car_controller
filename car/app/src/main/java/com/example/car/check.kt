@@ -8,13 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.ConnectException
+import java.net.SocketTimeoutException
 import java.util.*
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
 
 class check : AppCompatActivity() {
-    var socket_check = 1
+    var socket_check = 0
     var count = 0
     var back_cd = Timer().schedule(1000, 1000) {
         count++
@@ -23,27 +24,38 @@ class check : AppCompatActivity() {
         }
     }
     var ch = false
+    var login_json = JSONObject()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
         socket_check = 0
         ch = true
-//        test()
         thread {
             back_cd.run()
         }
         thread {
             try {
-
+                login_json.put("CMD", "LOGIN")
+                login_json.put("PWD", MainActivity.PWD)
                 var th = client_th_string()
                 th.start()
+                if (th.connection.isConnected){
+                    println(login_json)
+                    th.send_data(login_json.toString().toByteArray())
+                }
+
+
 
             } catch (e: ConnectException) {
-                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 Looper.loop()
                 println("請檢查主機是否異常")
+            }catch(e: SocketTimeoutException){
+                Toast.makeText(this, "Time out 請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+                println("Time out 請檢查主機是否異常")
+                Looper.loop()
             }
+
         }
         thread {
             while (ch) {

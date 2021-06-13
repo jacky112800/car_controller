@@ -7,17 +7,18 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 import java.net.ConnectException
+import java.net.SocketTimeoutException
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
 
-    var PWD: String = ""
+
 
     companion object {
         var ip: String = ""
+        var PWD: String = ""
         var port_car = ""
     }
 
@@ -43,9 +44,9 @@ class MainActivity : AppCompatActivity() {
                     port_car = ip_list[1]
                     println(ip + "/n" + port_car)
                     tojson(PWD)
-                    sign_in()
+
+
                 } catch (e: Exception) {
-                    Looper.prepare()
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
                     Looper.loop()
                 }
@@ -56,27 +57,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sign_in() {
-        Toast.makeText(this, "welcome", Toast.LENGTH_SHORT).show()
         val intent = Intent(this, check::class.java)
         startActivity(intent)
+
     }
 
-    var login_json = JSONObject()
+
 
     fun tojson(pwd: String) {
-        login_json.put("CMD", "LOGIN")
-        login_json.put("PWD", pwd)
-        println(login_json)
+
 
         thread {
             try {
                 var th = client_th_string()
                 th.start()
-                th.send_data(login_json.toString().toByteArray())
+                if (th.connection.isConnected){
+                    sign_in()
+                    println("連接成功")
+                }
+
+
             } catch (e: ConnectException) {
-                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("請檢查主機是否異常")
+                Looper.loop()
+            }catch(e: SocketTimeoutException){
+                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+                println("Time out 請檢查主機是否異常")
                 Looper.loop()
             }
         }
