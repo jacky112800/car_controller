@@ -47,10 +47,12 @@ class check : AppCompatActivity() {
 
 
             } catch (e: ConnectException) {
+                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 Looper.loop()
                 println("請檢查主機是否異常")
             }catch(e: SocketTimeoutException){
+                Looper.prepare()
                 Toast.makeText(this, "Time out 請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("Time out 請檢查主機是否異常")
                 Looper.loop()

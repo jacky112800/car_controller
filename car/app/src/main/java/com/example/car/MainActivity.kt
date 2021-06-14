@@ -44,9 +44,8 @@ class MainActivity : AppCompatActivity() {
                     port_car = ip_list[1]
                     println(ip + "/n" + port_car)
                     tojson(PWD)
-
-
                 } catch (e: Exception) {
+                    Looper.prepare()
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
                     Looper.loop()
                 }
@@ -78,6 +77,7 @@ class MainActivity : AppCompatActivity() {
 
 
             } catch (e: ConnectException) {
+                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("請檢查主機是否異常")
                 Looper.loop()

@@ -27,26 +27,25 @@ class client_th_string : Thread() {
     val reader: Scanner = Scanner(connection.getInputStream())
 
     override fun run() {
-        connection.soTimeout
         thread(connected) {
-
             while (connected) {
                 try {
                     receive_data()
                 }catch (e:SocketException){
                     connection.close()
-                    println("主機異常")
+                    println(e.toString())
+                    connected=false
                 } catch (e: ConnectException) {
                     connection.close()
-                    println("主機異常")
+                    println(e.toString())
+                    connected=false
                 }catch(e: SocketTimeoutException){
                     connection.close()
-                    println("主機異常")
+                    println(e.toString())
+                    connected=false
                 }
-
             }
         }
-
     }
 
     fun receive_data() {
@@ -62,10 +61,7 @@ class client_th_string : Thread() {
             data_in.readFully(img_bt, 0, img_bt.size)
         }
 
-        //接收到後關閉
-        if (img_bt!= null) {
-            connected = false
-        }
+
 
         //將資料放到全域變數,以供其他地方使用
         get_data = img_bt.decodeToString()
@@ -91,12 +87,12 @@ class client_th_string : Thread() {
 
     fun send_data(send_cmd: ByteArray) {
         //先關閉接收,再進行傳送,傳送後再開起接收
-        connected = false
-        thread(!connected) {
+
+        thread {
             data_out.writeInt(send_cmd.size)
             data_out.write(send_cmd)
         }
-        connected = true
+
     }
 
     fun close() {

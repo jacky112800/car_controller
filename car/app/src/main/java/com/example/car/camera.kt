@@ -37,10 +37,12 @@ class camera : AppCompatActivity() {
                 th = client_th_string()
                 th?.start()
             } catch (e: ConnectException) {
+                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("請檢查主機是否異常")
                 Looper.loop()
             }catch(e: SocketTimeoutException){
+                Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("Time out 請檢查主機是否異常")
                 Looper.loop()
