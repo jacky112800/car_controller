@@ -23,91 +23,88 @@ class check : AppCompatActivity() {
             go_back()
         }
     }
+    var th = socket_client(MainActivity.ip, MainActivity.port_car)
     var ch = false
-    var login_json = JSONObject()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
         socket_check = 0
         ch = true
-        thread {
+
+        var timer_count = thread(start = false) {
             back_cd.run()
         }
-        thread {
+
+        var client = thread(start = false) {
             try {
-                login_json.put("CMD", "LOGIN")
-                login_json.put("PWD", MainActivity.PWD)
-                var th = client_th_string()
                 th.start()
-                if (th.connection.isConnected){
-                    println(login_json)
-                    th.send_data(login_json.toString().toByteArray())
-                }
-
-
-
             } catch (e: ConnectException) {
                 Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 Looper.loop()
                 println("請檢查主機是否異常")
-            }catch(e: SocketTimeoutException){
+            } catch (e: SocketTimeoutException) {
                 Looper.prepare()
                 Toast.makeText(this, "Time out 請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("Time out 請檢查主機是否異常")
                 Looper.loop()
             }
-
         }
-        thread {
+
+        var check = thread(start = false) {
             while (ch) {
                 check()
                 Thread.sleep(100)
             }
         }
+
+        client.start()
+        check.start()
+        timer_count.start()
+        client.join()
+        check.join()
+        timer_count.join()
     }
 
     fun check() {
         try {
 
+            var login_check = client_th_string.get_data
+            var js_ob = JSONObject(login_check)
+            var log_info = js_ob.getString("CMD")
 
-        var login_check = client_th_string.get_data
-        var js_ob = JSONObject(login_check)
-        var log_info = js_ob.getString("CMD")
-
-        if (log_info == "LOG_INFO") {
-            var log_ch = js_ob.getString("VERIFY").toBoolean()
-            if (log_ch) {
-                socket_check = 1
+            if (log_info == "LOG_INFO") {
+                var log_ch = js_ob.getString("VERIFY").toBoolean()
+                if (log_ch) {
+                    socket_check = 1
+                }
+                if (!log_ch) {
+                    socket_check = 2
+                }
             }
-            if (!log_ch) {
-                socket_check = 2
-            }
-        }
 
-        if (socket_check == 1) {
-            Toast.makeText(this, "check", Toast.LENGTH_SHORT).show()
-            val check_intent = Intent(this, start_tap::class.java)
-            startActivity(check_intent)
-            println("11111")
-            ch = false
-        }
-        if (socket_check == 2) {
-            go_back()
-            println("22222")
-        }
-        }catch (e:JSONException){
+            if (socket_check == 1) {
+                Toast.makeText(this, "check", Toast.LENGTH_SHORT).show()
+                val check_intent = Intent(this, start_tap::class.java)
+                startActivity(check_intent)
+                println("驗證成功")
+                ch = false
+            }
+            if (socket_check == 2) {
+                go_back()
+                println("驗證錯誤")
+            }
+        } catch (e: JSONException) {
 
         }
 
     }
 
-    fun test() {
-        val check_intent = Intent(this, start_tap::class.java)
-        startActivity(check_intent)
-        back_cd.cancel()
-
-    }
+//    fun test() {
+//        val check_intent = Intent(this, start_tap::class.java)
+//        startActivity(check_intent)
+//        back_cd.cancel()
+//    }
 
     fun go_back() {
         back_cd.cancel()
@@ -115,8 +112,7 @@ class check : AppCompatActivity() {
         val check_intent = Intent(this, MainActivity::class.java)
         startActivity(check_intent)
         Looper.prepare()
-        Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "主機無回應\r\n請檢查主機是否異常", Toast.LENGTH_SHORT).show()
         Looper.loop()
-
     }
 }

@@ -15,9 +15,7 @@
     <list default="true" id="ceb9b463-d75e-4198-8d58-fe59687da524" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/client_th_string.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/client_th_string.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +39,13 @@
         </projects_view>
       </state>
     </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Class" />
+      </list>
+    </option>
   </component>
   <component name="GenerateSignedApkSettings">
     <option name="KEY_STORE_PATH" value="C:\Users\User\Desktop\app\3a717014.jks" />

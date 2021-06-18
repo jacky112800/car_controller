@@ -7,6 +7,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONObject
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import kotlin.concurrent.thread
@@ -15,11 +16,10 @@ import kotlin.concurrent.thread
 class MainActivity : AppCompatActivity() {
 
 
-
     companion object {
         var ip: String = ""
         var PWD: String = ""
-        var port_car = ""
+        var port_car = 65536
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,9 +41,8 @@ class MainActivity : AppCompatActivity() {
                 try {
                     val ip_list = ip_input.text.toString().split(":")
                     ip = ip_list[0]
-                    port_car = ip_list[1]
+                    port_car = ip_list[1].toInt()
                     println(ip + "/n" + port_car)
-                    tojson(PWD)
                 } catch (e: Exception) {
                     Looper.prepare()
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
@@ -62,26 +61,29 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    var login_json = JSONObject()
 
     fun tojson(pwd: String) {
 
-
         thread {
             try {
-                var th = client_th_string()
+                login_json.put("CMD", "LOGIN")
+                login_json.put("PWD", MainActivity.PWD)
+                var th = socket_client(ip, port_car)
                 th.start()
-                if (th.connection.isConnected){
-                    sign_in()
-                    println("連接成功")
-                }
 
+                if (th.socket.isConnected) {
+                    println(login_json)
+                    th.output_Stream.offer(login_json.toString(),1000,th.time_u)
+                    sign_in()
+                }
 
             } catch (e: ConnectException) {
                 Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("請檢查主機是否異常")
                 Looper.loop()
-            }catch(e: SocketTimeoutException){
+            } catch (e: SocketTimeoutException) {
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
                 println("Time out 請檢查主機是否異常")
                 Looper.loop()
