@@ -19,25 +19,22 @@ class check : AppCompatActivity() {
     var count = 0
     var back_cd = Timer().schedule(1000, 1000) {
         count++
-        if (count >= 5) {
+        println(count)
+        if (count >= 10) {
             go_back()
         }
     }
-    var th = socket_client(MainActivity.ip, MainActivity.port_car)
     var ch = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
-        socket_check = 0
+        socket_check = 1
         ch = true
-
-        var timer_count = thread(start = false) {
-            back_cd.run()
-        }
 
         var client = thread(start = false) {
             try {
-                th.start()
+
+                MainActivity.th.start()
             } catch (e: ConnectException) {
                 Looper.prepare()
                 Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
@@ -51,19 +48,10 @@ class check : AppCompatActivity() {
             }
         }
 
-        var check = thread(start = false) {
-            while (ch) {
-                check()
-                Thread.sleep(100)
-            }
-        }
-
         client.start()
-        check.start()
-        timer_count.start()
         client.join()
-        check.join()
-        timer_count.join()
+
+
     }
 
     fun check() {
@@ -84,11 +72,12 @@ class check : AppCompatActivity() {
             }
 
             if (socket_check == 1) {
+                println("驗證成功")
+                ch = false
+                back_cd.cancel()
                 Toast.makeText(this, "check", Toast.LENGTH_SHORT).show()
                 val check_intent = Intent(this, start_tap::class.java)
                 startActivity(check_intent)
-                println("驗證成功")
-                ch = false
             }
             if (socket_check == 2) {
                 go_back()

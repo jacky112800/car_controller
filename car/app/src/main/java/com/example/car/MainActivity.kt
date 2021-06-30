@@ -20,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         var ip: String = ""
         var PWD: String = ""
         var port_car = 65536
+        var th: socket_client = socket_client()
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +34,6 @@ class MainActivity : AppCompatActivity() {
     fun text_ent() {
         ip_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         PWD_input.inputType = EditorInfo.TYPE_CLASS_TEXT
-
         start_btn.setOnClickListener {
             if (ip_input.text.isNullOrEmpty() && PWD_input.text.isNullOrEmpty()) {
                 Toast.makeText(this, "請勿輸入空白", Toast.LENGTH_SHORT).show()
@@ -42,17 +43,18 @@ class MainActivity : AppCompatActivity() {
                     val ip_list = ip_input.text.toString().split(":")
                     ip = ip_list[0]
                     port_car = ip_list[1].toInt()
-                    println(ip + "/n" + port_car)
+                    println(ip + "\n" + port_car)
+                    Thread.sleep(100)
+                    tojson()
                 } catch (e: Exception) {
-                    Looper.prepare()
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
                     Looper.loop()
                 }
             }
         }
-
-
     }
+
 
     fun sign_in() {
         val intent = Intent(this, check::class.java)
@@ -63,33 +65,59 @@ class MainActivity : AppCompatActivity() {
 
     var login_json = JSONObject()
 
-    fun tojson(pwd: String) {
-
-        thread {
-            try {
-                login_json.put("CMD", "LOGIN")
-                login_json.put("PWD", MainActivity.PWD)
-                var th = socket_client(ip, port_car)
-                th.start()
-
-                if (th.socket.isConnected) {
-                    println(login_json)
-                    th.output_Stream.offer(login_json.toString(),1000,th.time_u)
-                    sign_in()
+    fun tojson() {
+        try {
+            var clientThread= thread(start=false) {
+                var th=MainActivity.th
+                println("1"+th.state)
+                if (th.state == Thread.State.RUNNABLE) {
+                    th.socketConnect()
+                } else if (th.state == Thread.State.NEW) {
+                    th.start()
+                    th.socketConnect()
                 }
-
-            } catch (e: ConnectException) {
-                Looper.prepare()
-                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                println("請檢查主機是否異常")
-                Looper.loop()
-            } catch (e: SocketTimeoutException) {
-                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                println("Time out 請檢查主機是否異常")
-                Looper.loop()
+               if (th.state==Thread.State.TERMINATED){
+                   Looper.prepare()
+                   Toast.makeText(this, "連線失敗，請重新開啟應用程式在嘗試", Toast.LENGTH_SHORT).show()
+                   restartApp()
+                   Looper.loop()
+               }
             }
+            login_json.put("CMD", "LOGIN")
+            login_json.put("PWD", MainActivity.PWD)
+            clientThread.start()
+
+            println(login_json)
+            if (th.socketConnection) {
+                println(login_json)
+                sign_in()
+            }
+
+        } catch (e: ConnectException) {
+            Looper.prepare()
+            Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+            Looper.loop()
+        } catch (e: SocketTimeoutException) {
+            Looper.prepare()
+            Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+            Looper.loop()
+        } catch (e: IllegalThreadStateException) {
+
+            e.printStackTrace()
+
         }
+
     }
+    fun restartApp() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        android.os.Process.killProcess(android.os.Process.myPid())
+
+    }
+
 }
 
 
