@@ -15,6 +15,7 @@
     <list default="true" id="ceb9b463-d75e-4198-8d58-fe59687da524" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/camera.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/check.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/car/socket_client.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/car/socket_client.kt" afterDir="false" />
     </list>
@@ -23,7 +24,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[VirtualDevicePath@C:\Users\User\.android\avd\Pixel_2_API_30.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[VirtualDevicePath@C:\Users\User\.android\avd\Pixel_2_API_30_1.avd]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -34,7 +35,12 @@
       <state>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="car" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -74,7 +80,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../app" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="settings.editor.selected.configurable" value="preferences.language.Kotlin" />
   </component>
   <component name="RecentsManager">
@@ -229,38 +235,46 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="275" y="21" key="#Notifications/0.0.1366.728@0.0.1366.728" timestamp="1623584491015" />
+    <state x="275" y="4" key="#Plugins" timestamp="1625312864070">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state x="275" y="4" key="#Plugins/0.0.1366.728@0.0.1366.728" timestamp="1625312864070" />
     <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog" timestamp="1620918495977">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="413" y="138" key="#com.intellij.ide.util.PackageChooserDialog/0.0.1366.728@0.0.1366.728" timestamp="1620918495977" />
-    <state x="363" y="98" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1623584544889">
+    <state x="363" y="98" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1625310482092">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="363" y="98" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1623584544889" />
+    <state x="363" y="98" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1366.728@0.0.1366.728" timestamp="1625310482092" />
     <state x="413" y="109" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1620918587289">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="413" y="109" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1366.728@0.0.1366.728" timestamp="1620918587289" />
-    <state x="462" y="118" key="FileChooserDialogImpl" timestamp="1623654072244">
+    <state x="92" y="92" width="1182" height="544" key="AVDManager" timestamp="1625311866677">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="462" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1623654072244" />
-    <state width="1322" height="155" key="GridCell.Tab.0.bottom" timestamp="1625052510715">
+    <state x="92" y="92" width="1182" height="544" key="AVDManager/0.0.1366.728@0.0.1366.728" timestamp="1625311866677" />
+    <state x="462" y="118" key="FileChooserDialogImpl" timestamp="1625313358441">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="155" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1625052510715" />
-    <state width="1322" height="155" key="GridCell.Tab.0.center" timestamp="1625052510715">
+    <state x="462" y="118" key="FileChooserDialogImpl/0.0.1366.728@0.0.1366.728" timestamp="1625313358441" />
+    <state width="661" height="155" key="GridCell.Tab.0.bottom" timestamp="1625312528852">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="155" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1625052510715" />
-    <state width="1322" height="155" key="GridCell.Tab.0.left" timestamp="1625052510715">
+    <state width="661" height="155" key="GridCell.Tab.0.bottom/0.0.1366.728@0.0.1366.728" timestamp="1625312528852" />
+    <state width="661" height="155" key="GridCell.Tab.0.center" timestamp="1625312528852">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="155" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1625052510715" />
-    <state width="1322" height="155" key="GridCell.Tab.0.right" timestamp="1625052510715">
+    <state width="661" height="155" key="GridCell.Tab.0.center/0.0.1366.728@0.0.1366.728" timestamp="1625312528852" />
+    <state width="661" height="155" key="GridCell.Tab.0.left" timestamp="1625312528851">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state width="1322" height="155" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1625052510715" />
+    <state width="661" height="155" key="GridCell.Tab.0.left/0.0.1366.728@0.0.1366.728" timestamp="1625312528851" />
+    <state width="661" height="155" key="GridCell.Tab.0.right" timestamp="1625312528852">
+      <screen x="0" y="0" width="1366" height="728" />
+    </state>
+    <state width="661" height="155" key="GridCell.Tab.0.right/0.0.1366.728@0.0.1366.728" timestamp="1625312528852" />
     <state x="184" y="0" key="SettingsEditor" timestamp="1617548133063">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

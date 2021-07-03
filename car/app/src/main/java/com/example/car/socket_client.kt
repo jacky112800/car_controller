@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
-open class socket_client : Thread() {
+class socket_client : Thread() {
     companion object {
         var get_json: String = ""
         val inputQueue = LinkedBlockingQueue<ByteArray>()
@@ -20,7 +20,7 @@ open class socket_client : Thread() {
 
     var connection = true
     var time_u: TimeUnit = TimeUnit.MILLISECONDS
-    var socketConnection=false
+    var socketConnection = false
 
 
     override fun run() {
@@ -28,33 +28,36 @@ open class socket_client : Thread() {
         this.socketConnect()
         println("Socket end")
     }
-    fun socketConnect(){
+
+    fun socketConnect() {
         try {
-        var socket = Socket(MainActivity.ip, MainActivity.port_car)
-        sleep(100)
-        socketConnection=socket.isConnected
-        if (!socket.isConnected){
-            closeSocket(socket)
-        }
-        if (socket.isConnected){
-            activate(socket)
-        }
-        }catch (e:ConnectException){
+            var socket = Socket(MainActivity.ip, MainActivity.port_car)
+            sleep(100)
+            socketConnection = socket.isConnected
+            if (!socket.isConnected) {
+                closeSocket(socket)
+            }
+            if (socket.isConnected) {
+                activate(socket)
+            }
+        } catch (e: ConnectException) {
             this.connection = false
             e.printStackTrace()
         }
     }
-    fun activate(socket:Socket) {
 
-            var recv = thread(start = false) { this.receive(socket) }
-            var send = thread(start = false) { this.sendMessage(socket) }
-            sleep(100)
+    fun activate(socket: Socket) {
 
-            recv.start()
-            send.start()
-            recv.join()
-            send.join()
-            socket.close()
+        var recv = thread(start = false) { this.receive(socket) }
+        var send = thread(start = false) { this.sendMessage(socket) }
+
+        sleep(100)
+
+        recv.start()
+        send.start()
+        recv.join()
+        send.join()
+        socket.close()
 
 
     }
@@ -118,7 +121,8 @@ open class socket_client : Thread() {
             e.printStackTrace()
         }
     }
-    fun closeSocket(socket: Socket){
+
+    fun closeSocket(socket: Socket) {
         this.connection = false
         socket.close()
     }

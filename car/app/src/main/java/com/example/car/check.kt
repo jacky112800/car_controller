@@ -7,9 +7,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONException
 import org.json.JSONObject
-import java.net.ConnectException
-import java.net.SocketTimeoutException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
@@ -24,41 +23,45 @@ class check : AppCompatActivity() {
             go_back()
         }
     }
+    var time_u: TimeUnit = TimeUnit.MILLISECONDS
     var ch = false
+    var login_json = JSONObject()
+    var infoCheck = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
         socket_check = 1
-        ch = true
 
-        var client = thread(start = false) {
-            try {
+        sendInfo()
+        infoCheck=true
+    }
 
-                MainActivity.th.start()
-            } catch (e: ConnectException) {
-                Looper.prepare()
-                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                Looper.loop()
-                println("請檢查主機是否異常")
-            } catch (e: SocketTimeoutException) {
-                Looper.prepare()
-                Toast.makeText(this, "Time out 請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                println("Time out 請檢查主機是否異常")
-                Looper.loop()
+    var inputstring = ""
+    fun sendInfo() {
+        var checkThread = thread(start = false) {
+            if (inputstring != null && inputstring != "") {
+                check()
             }
         }
-
-        client.start()
-        client.join()
-
-
+        var byteToString = thread(start = false) {
+            while (infoCheck) {
+                recvByteArrayToString()
+            }
+        }
+        login_json.put("CMD", "LOGIN")
+        login_json.put("PWD", MainActivity.PWD)
+        sendStringToByteArray(login_json)
+        checkThread.start()
+        byteToString.start()
+        checkThread.join()
+        byteToString.join()
     }
 
     fun check() {
         try {
 
-            var login_check = client_th_string.get_data
-            var js_ob = JSONObject(login_check)
+            var js_ob = JSONObject(inputstring)
             var log_info = js_ob.getString("CMD")
 
             if (log_info == "LOG_INFO") {
@@ -89,11 +92,11 @@ class check : AppCompatActivity() {
 
     }
 
-//    fun test() {
-//        val check_intent = Intent(this, start_tap::class.java)
-//        startActivity(check_intent)
-//        back_cd.cancel()
-//    }
+    fun test() {
+        val check_intent = Intent(this, start_tap::class.java)
+        startActivity(check_intent)
+        back_cd.cancel()
+    }
 
     fun go_back() {
         back_cd.cancel()
@@ -103,5 +106,26 @@ class check : AppCompatActivity() {
         Looper.prepare()
         Toast.makeText(this, "主機無回應\r\n請檢查主機是否異常", Toast.LENGTH_SHORT).show()
         Looper.loop()
+    }
+
+    fun sendStringToByteArray(jsonObject: JSONObject) {
+        var strTobyte = thread(start = false) {
+            var string = jsonObject.toString()
+            var bytearrayString = string.encodeToByteArray()
+            socket_client.outputQueue.offer(bytearrayString, 1000, time_u)
+        }
+        strTobyte.start()
+        strTobyte.join()
+    }
+
+    fun recvByteArrayToString() {
+        if (socket_client.inputQueue != null) {
+            var inputByteArray = socket_client.inputQueue.poll(1000, time_u)
+            if (inputByteArray != null) {
+                inputstring = inputByteArray.decodeToString()
+            }
+        }
+
+
     }
 }

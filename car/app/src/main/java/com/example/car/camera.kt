@@ -4,7 +4,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.widget.ImageView
@@ -15,9 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
 import org.json.JSONException
 import org.json.JSONObject
-import java.net.ConnectException
-import java.net.SocketTimeoutException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
@@ -28,28 +26,11 @@ class camera : AppCompatActivity() {
 
     private var m_angle_tv: TextView? = null
     private var m_strength_tv: TextView? = null
+    var time_u: TimeUnit = TimeUnit.MILLISECONDS
 
-    var th: client_th_string? = null
+    var th = MainActivity.th
 
-    init {
-        thread {
-            try {
-                th = client_th_string()
-                th?.start()
-            } catch (e: ConnectException) {
-                Looper.prepare()
-                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                println("請檢查主機是否異常")
-                Looper.loop()
-            }catch(e: SocketTimeoutException){
-                Looper.prepare()
-                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                println("Time out 請檢查主機是否異常")
-                Looper.loop()
-            }
-        }
-    }
-
+    var inputstring=""
     var receive_check = false
     var angle_run: Double = 0.0
     var strength_run = 0.0
@@ -60,14 +41,29 @@ class camera : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
         receive_check = true
-
         to_stream(true)
 
-        //joystick
+        val joystick = findViewById<JoystickView>(R.id.joystickView_car)
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
         m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
-        val joystick = findViewById<JoystickView>(R.id.joystickView_car)
+        var joystickThread = thread(start = false) {
+            Thread.sleep(100)
+            joystickListen(joystick)
+        }
+        var drawThread = thread(start = false) {
+            while (receive_check) {
+                Thread.sleep(100)
+                draw_json()
+            }
+        }
+        //joystick
 
+
+
+
+    }
+
+    fun joystickListen(joystick: JoystickView) {
         joystick.setOnMoveListener { angle, strength ->
             m_angle_tv!!.setText(angle.toString())
             m_strength_tv!!.setText(strength.toString())
@@ -134,38 +130,6 @@ class camera : AppCompatActivity() {
 
             println("LLLL " + angle_json_L + " RRRR " + angle_json_R + " aaaa " + angle_run)
         }
-
-//        right_left_btn.setOnTouchListener(
-//            object : View.OnTouchListener {
-//                override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//                    when (event?.action) {
-//                        MotionEvent.ACTION_DOWN -> {
-//                            car_run = 1
-//                            println(car_run)
-//                        }
-//                        MotionEvent.ACTION_UP -> {
-//                            car_run = 0
-//                            println(car_run)
-//                        }
-//                    }
-//                    return onTouchEvent(event)
-//                }
-//            })
-
-        thread {
-            while (receive_check) {
-                Thread.sleep(100)
-                draw_json()
-            }
-        }
-
-        thread {
-            while (receive_check) {
-                Thread.sleep(100)
-                th?.send_move(angle_json_L, angle_json_R)
-            }
-        }
-
     }
 
     fun to_setting(view: View) {
@@ -231,7 +195,7 @@ class camera : AppCompatActivity() {
         Thread.sleep(100)
         receive_check = false
         Thread.sleep(100)
-        th?.send_cmd("LOGOUT")
+
         Thread.sleep(100)
         finishAffinity()
 
@@ -243,13 +207,30 @@ class camera : AppCompatActivity() {
         receive_check = false
     }
 
-
     fun to_stream(str_stream: Boolean) {
         var stream_json = JSONObject()
         stream_json.put("CMD", "IS_STREAM")
         stream_json.put("IS_STREAM", str_stream)
         println(stream_json)
-        th?.send_data(stream_json.toString().toByteArray())
+        sendStringToByteArray(stream_json)
     }
 
+    fun sendStringToByteArray(jsonObject: JSONObject) {
+        var strTobyte = thread(start = false) {
+            var string = jsonObject.toString()
+            var bytearrayString = string.encodeToByteArray()
+            socket_client.outputQueue.offer(bytearrayString, 1000, time_u)
+        }
+        strTobyte.start()
+        strTobyte.join()
+    }
+
+    fun recvByteArrayToString() {
+        while (receive_check) {
+            var inputByteArray = socket_client.inputQueue.poll(1000, time_u)
+            Thread.sleep(100)
+            inputstring = inputByteArray.decodeToString()
+            Thread.sleep(100)
+        }
+    }
 }

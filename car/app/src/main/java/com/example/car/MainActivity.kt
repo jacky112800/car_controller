@@ -7,7 +7,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import org.json.JSONObject
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import kotlin.concurrent.thread
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         text_ent()
-
     }
 
     fun text_ent() {
@@ -45,7 +43,8 @@ class MainActivity : AppCompatActivity() {
                     port_car = ip_list[1].toInt()
                     println(ip + "\n" + port_car)
                     Thread.sleep(100)
-                    tojson()
+                    sign_in()
+//                    tojson()
                 } catch (e: Exception) {
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
@@ -63,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    var login_json = JSONObject()
+
 
     fun tojson() {
         try {
@@ -76,20 +75,18 @@ class MainActivity : AppCompatActivity() {
                     th.start()
                     th.socketConnect()
                 }
-               if (th.state==Thread.State.TERMINATED){
-                   Looper.prepare()
-                   Toast.makeText(this, "連線失敗，請重新開啟應用程式在嘗試", Toast.LENGTH_SHORT).show()
-                   restartApp()
-                   Looper.loop()
-               }
             }
-            login_json.put("CMD", "LOGIN")
-            login_json.put("PWD", MainActivity.PWD)
+
+            if (th.state==Thread.State.TERMINATED){
+                Looper.prepare()
+                Toast.makeText(this, "連線失敗，請重新開啟應用程式在嘗試", Toast.LENGTH_SHORT).show()
+                restartApp()
+                Looper.loop()
+            }
+
             clientThread.start()
 
-            println(login_json)
             if (th.socketConnection) {
-                println(login_json)
                 sign_in()
             }
 
