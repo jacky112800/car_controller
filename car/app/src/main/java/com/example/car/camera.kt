@@ -30,7 +30,7 @@ class camera : AppCompatActivity() {
 
     var th = MainActivity.th
 
-    var inputstring=""
+    var inputstring = ""
     var receive_check = false
     var angle_run: Double = 0.0
     var strength_run = 0.0
@@ -41,26 +41,26 @@ class camera : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
         receive_check = true
-        to_stream(true)
+
 
         val joystick = findViewById<JoystickView>(R.id.joystickView_car)
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
         m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
+
         var joystickThread = thread(start = false) {
             Thread.sleep(100)
             joystickListen(joystick)
         }
+        var readByteArray = thread(start = false) { recvByteArrayToString() }
         var drawThread = thread(start = false) {
             while (receive_check) {
                 Thread.sleep(100)
                 draw_json()
             }
         }
-        //joystick
 
 
-
-
+        to_stream(true)
     }
 
     fun joystickListen(joystick: JoystickView) {
@@ -129,7 +129,19 @@ class camera : AppCompatActivity() {
             }
 
             println("LLLL " + angle_json_L + " RRRR " + angle_json_R + " aaaa " + angle_run)
+            send_move(angle_json_L, angle_json_R)
         }
+    }
+
+    fun send_move(L: Double, R: Double) {
+        //將要傳送的字串(指令)放進標籤為CMD的JSON
+        //此為專為移動數值所設
+        var moveJson = JSONObject()
+        moveJson.put("CMD", "MOV")
+        moveJson.put("L", L)
+        moveJson.put("R", R)
+        println(moveJson)
+        sendJsonToByteArray(moveJson)
     }
 
     fun to_setting(view: View) {
@@ -143,7 +155,7 @@ class camera : AppCompatActivity() {
 
         try {
             //將全域變數的圖像資料取用
-            var json_data = client_th_string.get_data
+            var json_data = inputstring
 
             var js_ob = JSONObject(json_data)
             //如果CMD標籤內的字串為FRAME時
@@ -212,10 +224,10 @@ class camera : AppCompatActivity() {
         stream_json.put("CMD", "IS_STREAM")
         stream_json.put("IS_STREAM", str_stream)
         println(stream_json)
-        sendStringToByteArray(stream_json)
+        sendJsonToByteArray(stream_json)
     }
 
-    fun sendStringToByteArray(jsonObject: JSONObject) {
+    fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
             var string = jsonObject.toString()
             var bytearrayString = string.encodeToByteArray()
@@ -227,10 +239,10 @@ class camera : AppCompatActivity() {
 
     fun recvByteArrayToString() {
         while (receive_check) {
-            var inputByteArray = socket_client.inputQueue.poll(1000, time_u)
-            Thread.sleep(100)
-            inputstring = inputByteArray.decodeToString()
-            Thread.sleep(100)
+            if (socket_client.inputQueue != null) {
+                var inputByteArray = socket_client.inputQueue.poll(1000, time_u)
+                inputstring = inputByteArray.decodeToString()
+            }
         }
     }
 }

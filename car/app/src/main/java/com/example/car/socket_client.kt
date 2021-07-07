@@ -33,13 +33,9 @@ class socket_client : Thread() {
         try {
             var socket = Socket(MainActivity.ip, MainActivity.port_car)
             sleep(100)
-            socketConnection = socket.isConnected
-            if (!socket.isConnected) {
-                closeSocket(socket)
-            }
-            if (socket.isConnected) {
-                activate(socket)
-            }
+            println("Socket start")
+            socketConnection=socket.isConnected
+            activate(socket)
         } catch (e: ConnectException) {
             this.connection = false
             e.printStackTrace()
@@ -59,10 +55,10 @@ class socket_client : Thread() {
         send.join()
         socket.close()
 
-
     }
 
     private fun receive(socket: Socket) {
+        println("Socket receive")
         var inputStream = socket.getInputStream()
         while (this.connection) {
             try {
@@ -105,13 +101,15 @@ class socket_client : Thread() {
     }
 
     private fun sendMessage(socket: Socket) {
+        println("Socket sendMessage")
         var outputStream = socket.getOutputStream()
         try {
             while (this.connection) {
                 var outputData = outputQueue.poll(1000, time_u)
-                var outputDataSize = ByteBuffer.allocate(4).putInt(outputData.size).array()
-                outputStream.write(outputDataSize)
-                outputStream.write(outputData)
+                if (outputData!=null) {
+                    outputStream.write(outputData.size)
+                    outputStream.write(outputData)
+                }
             }
         } catch (e: EOFException) {
             closeSocket(socket)

@@ -26,22 +26,24 @@ class check : AppCompatActivity() {
     var time_u: TimeUnit = TimeUnit.MILLISECONDS
     var ch = false
     var login_json = JSONObject()
-    var infoCheck = false
+    var infoCheck = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
         socket_check = 1
-
+        Thread.sleep(1000)
         sendInfo()
-        infoCheck=true
     }
 
     var inputstring = ""
+
     fun sendInfo() {
         var checkThread = thread(start = false) {
-            if (inputstring != null && inputstring != "") {
-                check()
+            while (infoCheck) {
+                if (inputstring != null && inputstring != "") {
+                    check()
+                }
             }
         }
         var byteToString = thread(start = false) {
@@ -49,13 +51,13 @@ class check : AppCompatActivity() {
                 recvByteArrayToString()
             }
         }
-        login_json.put("CMD", "LOGIN")
-        login_json.put("PWD", MainActivity.PWD)
-        sendStringToByteArray(login_json)
+
         checkThread.start()
         byteToString.start()
-        checkThread.join()
-        byteToString.join()
+        println("send")
+        login_json.put("CMD", "LOGIN")
+        login_json.put("PWD", MainActivity.PWD)
+        sendJsonToByteArray(login_json)
     }
 
     fun check() {
@@ -92,11 +94,11 @@ class check : AppCompatActivity() {
 
     }
 
-    fun test() {
-        val check_intent = Intent(this, start_tap::class.java)
-        startActivity(check_intent)
-        back_cd.cancel()
-    }
+//    fun test() {
+//        val check_intent = Intent(this, start_tap::class.java)
+//        startActivity(check_intent)
+//        back_cd.cancel()
+//    }
 
     fun go_back() {
         back_cd.cancel()
@@ -108,7 +110,7 @@ class check : AppCompatActivity() {
         Looper.loop()
     }
 
-    fun sendStringToByteArray(jsonObject: JSONObject) {
+    fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
             var string = jsonObject.toString()
             var bytearrayString = string.encodeToByteArray()
@@ -125,7 +127,5 @@ class check : AppCompatActivity() {
                 inputstring = inputByteArray.decodeToString()
             }
         }
-
-
     }
 }
