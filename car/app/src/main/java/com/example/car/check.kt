@@ -14,43 +14,35 @@ import kotlin.concurrent.thread
 
 
 class check : AppCompatActivity() {
-    var socket_check = 0
     var count = 0
-    var back_cd = Timer().schedule(1000, 1000) {
-        count++
-        println(count)
-        if (count >= 10) {
-            go_back()
-        }
-    }
+
     var time_u: TimeUnit = TimeUnit.MILLISECONDS
-    var ch = false
     var login_json = JSONObject()
     var infoCheck = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
-        socket_check = 1
         Thread.sleep(1000)
+    }
+
+    override fun onStart() {
+        super.onStart()
         sendInfo()
     }
 
+    var backCd = Timer("backCd").schedule(1000, 1000) {
+        count++
+        println(count)
+        if (count >= 6) {
+            go_back()
+        }
+    }
     var inputstring = ""
 
     fun sendInfo() {
-        var checkThread = thread(start = false) {
-            while (infoCheck) {
-                if (inputstring != null && inputstring != "") {
-                    check()
-                }
-            }
-        }
-        var byteToString = thread(start = false) {
-            while (infoCheck) {
-                recvByteArrayToString()
-            }
-        }
+        var checkThread = thread(start = false) { check() }
+        var byteToString = thread(start = false) { recvByteArrayToString() }
 
         checkThread.start()
         byteToString.start()
@@ -58,42 +50,51 @@ class check : AppCompatActivity() {
         login_json.put("CMD", "LOGIN")
         login_json.put("PWD", MainActivity.PWD)
         sendJsonToByteArray(login_json)
+        println("sendok")
+        checkThread.join()
+        byteToString.join()
     }
 
     fun check() {
         try {
+//            while (infoCheck) {
+            val infoCheckTimer = Timer("recvByteArrayToString").schedule(0, 10) {
+                if (inputstring != "") {
+                    var js_ob = JSONObject(inputstring)
+                    var log_info = js_ob.getString("CMD")
 
-            var js_ob = JSONObject(inputstring)
-            var log_info = js_ob.getString("CMD")
-
-            if (log_info == "LOG_INFO") {
-                var log_ch = js_ob.getString("VERIFY").toBoolean()
-                if (log_ch) {
-                    socket_check = 1
+                    if (log_info == "LOG_INFO") {
+                        var log_ch = js_ob.getString("VERIFY").toBoolean()
+                        if (log_ch) {
+                            infoCheck = false
+                            println("驗證成功")
+                            backCd.cancel()
+                            NextActivity()
+                            cancel()
+                        }
+                        if (!log_ch) {
+                            infoCheck = false
+                            go_back()
+                            cancel()
+                            println("驗證錯誤")
+                        }
+                    }
                 }
-                if (!log_ch) {
-                    socket_check = 2
-                }
             }
+            infoCheckTimer.run()
 
-            if (socket_check == 1) {
-                println("驗證成功")
-                ch = false
-                back_cd.cancel()
-                Toast.makeText(this, "check", Toast.LENGTH_SHORT).show()
-                val check_intent = Intent(this, start_tap::class.java)
-                startActivity(check_intent)
-            }
-            if (socket_check == 2) {
-                go_back()
-                println("驗證錯誤")
-            }
+//                Thread.sleep(100)
+//            }
         } catch (e: JSONException) {
 
         }
 
     }
 
+    fun NextActivity() {
+        val check_intent = Intent(this, start_tap::class.java)
+        startActivity(check_intent)
+    }
 //    fun test() {
 //        val check_intent = Intent(this, start_tap::class.java)
 //        startActivity(check_intent)
@@ -101,18 +102,20 @@ class check : AppCompatActivity() {
 //    }
 
     fun go_back() {
-        back_cd.cancel()
-        ch = false
+        Looper.prepare()
+        infoCheck = false
+        Toast.makeText(this, "主機無回應\r\n請檢查主機是否異常", Toast.LENGTH_SHORT).show()
         val check_intent = Intent(this, MainActivity::class.java)
         startActivity(check_intent)
-        Looper.prepare()
-        Toast.makeText(this, "主機無回應\r\n請檢查主機是否異常", Toast.LENGTH_SHORT).show()
+        backCd.cancel()
         Looper.loop()
+
     }
 
     fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
             var string = jsonObject.toString()
+            println(string)
             var bytearrayString = string.encodeToByteArray()
             socket_client.outputQueue.offer(bytearrayString, 1000, time_u)
         }
@@ -121,11 +124,18 @@ class check : AppCompatActivity() {
     }
 
     fun recvByteArrayToString() {
-        if (socket_client.inputQueue != null) {
-            var inputByteArray = socket_client.inputQueue.poll(1000, time_u)
-            if (inputByteArray != null) {
-                inputstring = inputByteArray.decodeToString()
+        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
+            if (!socket_client.inputQueue.isNullOrEmpty()) {
+                val inputByteArray = socket_client.inputQueue.poll(1000, time_u)
+                if (inputByteArray != null) {
+                    inputstring = inputByteArray.decodeToString()
+                    println(inputstring)
+                }
+            }
+            if (!infoCheck) {
+                cancel()
             }
         }
+        catchTimer.run()
     }
 }

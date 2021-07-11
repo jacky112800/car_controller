@@ -1,5 +1,7 @@
 package com.example.car
 
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
 import java.io.EOFException
 import java.io.InputStream
 import java.net.ConnectException
@@ -81,11 +83,13 @@ class socket_client : Thread() {
         todo: decode String to JsonString
          */
         var head = ByteBuffer.wrap(receiveAll(inputStream, 4)).int
-        var message = receiveAll(inputStream, head)
-        inputQueue.offer(message, 1000, time_u)
+        var outputStream = ByteArrayOutputStream()
+        outputStream.write(receiveAll(inputStream, head))
+        var inputStringByteArray = outputStream.toByteArray()
+        inputQueue.offer(inputStringByteArray,1000,time_u)
     }
 
-    private fun receiveAll(inputStream: InputStream, buffSize: Int): ByteArray? {
+    private fun receiveAll(data_in: InputStream, buffSize: Int): ByteArray {
         /*
         get buffSize byteArray
         todo: throw EOFException when received = -1
@@ -94,7 +98,7 @@ class socket_client : Thread() {
         var buffer = ByteArray(buffSize)
         var total = 0
         while (total < buffSize) {
-            var received = inputStream.read(buffer, total, buffSize - total)
+            var received = data_in.read(buffer, total, buffSize - total)
             total += received
         }
         return buffer
@@ -102,12 +106,14 @@ class socket_client : Thread() {
 
     private fun sendMessage(socket: Socket) {
         println("Socket sendMessage")
-        var outputStream = socket.getOutputStream()
+        var outputStream = DataOutputStream(socket.getOutputStream())
         try {
             while (this.connection) {
                 var outputData = outputQueue.poll(1000, time_u)
                 if (outputData!=null) {
-                    outputStream.write(outputData.size)
+                    println(outputData.size.toString()+"socket")
+                    println(outputData.decodeToString()+"socket")
+                    outputStream.writeInt(outputData.size)
                     outputStream.write(outputData)
                 }
             }
