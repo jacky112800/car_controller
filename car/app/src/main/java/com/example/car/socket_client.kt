@@ -14,16 +14,13 @@ import kotlin.concurrent.thread
 
 class socket_client : Thread() {
     companion object {
-        var get_json: String = ""
         val inputQueue = LinkedBlockingQueue<ByteArray>()
         val outputQueue = LinkedBlockingQueue<ByteArray>()
     }
 
-
     var connection = true
     var time_u: TimeUnit = TimeUnit.MILLISECONDS
     var socketConnection = false
-
 
     override fun run() {
         println("Socket connect")
@@ -56,7 +53,6 @@ class socket_client : Thread() {
         recv.join()
         send.join()
         socket.close()
-
     }
 
     private fun receive(socket: Socket) {

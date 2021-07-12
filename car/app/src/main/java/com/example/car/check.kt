@@ -37,7 +37,8 @@ class check : AppCompatActivity() {
         if (count >= 6) {
             go_back()
         }
-    }
+    }//六秒後沒有回應返回登入頁面
+
     var inputstring = ""
 
     fun sendInfo() {
@@ -46,11 +47,9 @@ class check : AppCompatActivity() {
 
         checkThread.start()
         byteToString.start()
-        println("send")
         login_json.put("CMD", "LOGIN")
         login_json.put("PWD", MainActivity.PWD)
         sendJsonToByteArray(login_json)
-        println("sendok")
         checkThread.join()
         byteToString.join()
     }
@@ -69,8 +68,8 @@ class check : AppCompatActivity() {
                             infoCheck = false
                             println("驗證成功")
                             backCd.cancel()
-                            NextActivity()
-                            cancel()
+                            NextActivity()//進入下一個頁面 start_tap
+                            cancel()//取消本timer
                         }
                         if (!log_ch) {
                             infoCheck = false
@@ -82,10 +81,8 @@ class check : AppCompatActivity() {
                 }
             }
             infoCheckTimer.run()
-
-//                Thread.sleep(100)
-//            }
         } catch (e: JSONException) {
+            e.printStackTrace()
 
         }
 
@@ -95,11 +92,7 @@ class check : AppCompatActivity() {
         val check_intent = Intent(this, start_tap::class.java)
         startActivity(check_intent)
     }
-//    fun test() {
-//        val check_intent = Intent(this, start_tap::class.java)
-//        startActivity(check_intent)
-//        back_cd.cancel()
-//    }
+
 
     fun go_back() {
         Looper.prepare()
@@ -129,7 +122,7 @@ class check : AppCompatActivity() {
                 val inputByteArray = socket_client.inputQueue.poll(1000, time_u)
                 if (inputByteArray != null) {
                     inputstring = inputByteArray.decodeToString()
-                    println(inputstring)
+                    println("catch:$inputstring")
                 }
             }
             if (!infoCheck) {

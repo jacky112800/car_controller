@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         var th: socket_client = socket_client()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity() {
                     port_car = ip_list[1].toInt()
                     println(ip + "\n" + port_car)
                     Thread.sleep(100)
-//                    sign_in()
                     tojson()
                 } catch (e: Exception) {
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
@@ -54,35 +52,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    fun sign_in() {
-        val intent = Intent(this, check::class.java)
-        startActivity(intent)
-
-    }
-
-
     fun tojson() {
-        var ctBoolean=true
         try {
+            var ctBoolean = true
             var clientThread = thread(start = false) {
                 println("1" + th.state)
-                if (th.state == Thread.State.RUNNABLE) {
+                if (th.state == Thread.State.RUNNABLE) {//偵測socket class狀態以免重複start
                     th.socketConnect()
                 } else if (th.state == Thread.State.NEW) {
                     th.start()
                 }
             }
+
             var clientThread_check = thread(start = false) {
                 while (ctBoolean) {
-                    if (th.socketConnection) {
-                        ctBoolean=false
+                    if (th.socketConnection) {//連線成功時進入下一個頁面
+                        ctBoolean = false
                         val intent = Intent(this, check::class.java)
-                        startActivity(intent)
+                        startActivity(intent)//進入驗證頁面 check.kt
                     }
-                    if (th.state == Thread.State.TERMINATED) {
+                    if (th.state == Thread.State.TERMINATED) {//避免重複start class當狀態為終止時重啟app
                         Looper.prepare()
-                        ctBoolean=false
+                        ctBoolean = false
                         Toast.makeText(this, "連線失敗，請點擊再次登入鈕，\n以便重新開啟應用程式再嘗試。", Toast.LENGTH_SHORT)
                             .show()
                         restartApp()
@@ -107,11 +98,8 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
             Looper.loop()
         } catch (e: IllegalThreadStateException) {
-
             e.printStackTrace()
-
         }
-
     }
 
     fun restartApp() {
@@ -119,7 +107,6 @@ class MainActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         android.os.Process.killProcess(android.os.Process.myPid())
-
     }
 
 }

@@ -42,7 +42,7 @@ class camera : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-        
+
         m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
         m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
 
@@ -80,12 +80,10 @@ class camera : AppCompatActivity() {
             angle_run = angle_run / 10
 
             if ((angle > 0) && (angle < 180)) {
-
                 val angle_c = angle
                 angle_run = ((angle_c.toDouble() - 90) / 90)
                 angle_run = Math.floor((angle_run * 10))
                 angle_run = angle_run / 10
-
 
                 if ((angle > 0) && (angle < 90)) {
                     angle_run = 1 + angle_run
@@ -103,6 +101,7 @@ class camera : AppCompatActivity() {
                     angle_json_L = -angle_run * strength_run
                 }
             }
+
             if ((angle > 180) && (angle < 360)) {
                 val angle_c = angle
                 angle_run = ((angle_c.toDouble() - 270) / 90)
@@ -124,8 +123,8 @@ class camera : AppCompatActivity() {
                     angle_json_R = -angle_run * strength_run
                     angle_json_L = -1.0 * strength_run
                 }
-
             }
+
             if (angle == 90) {
                 angle_json_R = 1.0 * strength_run
                 angle_json_L = 1.0 * strength_run
@@ -134,8 +133,6 @@ class camera : AppCompatActivity() {
                 angle_json_R = -1.0 * strength_run
                 angle_json_L = -1.0 * strength_run
             }
-
-//            println("LLLL " + angle_json_L + " RRRR " + angle_json_R + " aaaa " + angle_run)
             send_move(angle_json_L, angle_json_R)
         }
     }
@@ -162,9 +159,7 @@ class camera : AppCompatActivity() {
 
     fun draw_json() {
         val img_view_car = findViewById<ImageView>(R.id.img_view_car_to_iphone)
-
         try {
-//            while (receiveCheck) {
             //將全域變數的圖像資料取用
             val drawTimer = Timer("draw").schedule(0, 30) {
                 if (inputstring != "") {
@@ -173,7 +168,6 @@ class camera : AppCompatActivity() {
                     //如果CMD標籤內的字串為FRAME時
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
-
                     if (js_ob.getString("CMD") == "FRAME") {
                         var img_b64 = js_ob.getString("IMAGE")
                         var jpg_data = Base64.getDecoder().decode(img_b64)
@@ -187,12 +181,11 @@ class camera : AppCompatActivity() {
                     }
 
                 }
-                if(!receiveCheck){
+                if (!receiveCheck) {
                     cancel()
                 }
             }
-
-//            }
+            drawTimer.run()
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -203,14 +196,6 @@ class camera : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-
-//            val back_cd = Timer().schedule(6000) {
-//                count = 0
-//                cancel()
-//            }
-//            back_cd.run()
-
-            println(count)
             if (count == 0) {
                 Toast.makeText(this, "按兩次即關閉APP", Toast.LENGTH_SHORT).show()
             }
@@ -273,15 +258,13 @@ class camera : AppCompatActivity() {
                 val inputByteArray = socket_client.inputQueue.poll(1000, time_u)
                 if (inputByteArray != null) {
                     inputstring = inputByteArray.decodeToString()
-                    println(inputstring)
+                    println("catch:$inputstring")
                 }
             }
-            if(!receiveCheck){
+            if (!receiveCheck) {
                 cancel()
             }
         }
         catchTimer.run()
-
     }
-
 }
