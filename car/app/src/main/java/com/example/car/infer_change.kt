@@ -21,7 +21,7 @@ class infer_change : AppCompatActivity() {
         infer_h_text.inputType = EditorInfo.TYPE_CLASS_TEXT
         infer_w_text.inputType = EditorInfo.TYPE_CLASS_TEXT
 
-        start_btn.setOnClickListener {
+        infer_change_btn.setOnClickListener {
             if (infer_h_text.text.isNullOrEmpty() && infer_w_text.text.isNullOrEmpty()) {
                 Toast.makeText(this, "請勿輸入空白", Toast.LENGTH_SHORT).show()
             } else {
@@ -47,17 +47,6 @@ class infer_change : AppCompatActivity() {
         login_json.put("PWD", pwd)
         println(login_json)
 
-        thread {
-            try {
-                var th = client_th_string()
-                th.start()
-                th.send_data(login_json.toString().toByteArray())
-            } catch (e: ConnectException) {
-                Looper.prepare()
-                Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-                println("請檢查主機是否異常")
-                Looper.loop()
-            }
-        }
+
     }
 }

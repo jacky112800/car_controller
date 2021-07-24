@@ -11,6 +11,7 @@
     <string name="verification_tip">驗證</string>
     <string name="tap_start">點擊以進入操作介面</string>
     <string name="item_select">辨識物件選擇</string>
+    <string name="item_switch">物件辨識</string>
     <string name="camera_switch">解析度切換</string>
     <string name="file_location">附加回傳辨識結果設定</string>
     <string name="color_select">主機關閉選項</string>
@@ -21,6 +22,7 @@
     <string name="infer_w">寬：</string>
     <string name="infer_change">確定</string>
     <string name="infer_change_title">解析度變更</string>
+
 
 
 

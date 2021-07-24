@@ -4,28 +4,43 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONException
+import org.json.JSONObject
 import java.net.ConnectException
 import java.net.SocketTimeoutException
+import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
 
 class MainActivity : AppCompatActivity() {
-
 
     companion object {
         var ip: String = ""
         var PWD: String = ""
         var port_car = 65536
         var th: socket_client = socket_client()
+        var socketIsChecked = false
     }
+
+    var timeU: TimeUnit = TimeUnit.MILLISECONDS
+    var inputString = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         text_ent()
+        if (socketIsChecked) {
+            Toast.makeText(this, "登出中請稍候", Toast.LENGTH_SHORT).show()
+            logout()
+        }
     }
 
     fun text_ent() {
@@ -66,7 +81,7 @@ class MainActivity : AppCompatActivity() {
 
             var clientThread_check = thread(start = false) {
                 while (ctBoolean) {
-                    if (th.socketConnection) {//連線成功時進入下一個頁面
+                    if (th.socketConnection && !socketIsChecked) {//連線成功時進入下一個頁面
                         ctBoolean = false
                         val intent = Intent(this, check::class.java)
                         startActivity(intent)//進入驗證頁面 check.kt
@@ -109,6 +124,71 @@ class MainActivity : AppCompatActivity() {
         android.os.Process.killProcess(android.os.Process.myPid())
     }
 
+    var logoutJson = JSONObject()
+
+    private fun logout() {
+        val catchLogoutMessage = thread(start = false) { revByteArrayToString() }
+        val checkSeverLogoutThread = thread(start = false) { checkServerLogout() }
+        logoutJson.put("CMD", "LOGOUT")
+        Thread.sleep(100)
+        sendJsonToByteArray(logoutJson)
+        Thread.sleep(100)
+        catchLogoutMessage.start()
+        checkSeverLogoutThread.start()
+        catchLogoutMessage.join()
+        checkSeverLogoutThread.join()
+        Thread.sleep(100)
+    }
+
+    private fun checkServerLogout() {
+        try {
+            //將全域變數的圖像資料取用
+            val drawTimer = Timer("checkServer").schedule(0, 30) {
+                if (inputString != "") {
+                    val jsonData = inputString
+                    val jsonObject = JSONObject(jsonData)
+
+                    if (jsonObject.getString("CMD") == "SYS_LOGOUT") {
+                        println(jsonObject)
+                        th.connection = false
+                        restartApp()
+                    }
+                }
+                if (!socketIsChecked) {
+                    cancel()
+                }
+            }
+            drawTimer.run()
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun sendJsonToByteArray(jsonObject: JSONObject) {
+        var strTobyte = thread(start = false) {
+            var string = jsonObject.toString()
+            var bytearrayString = string.encodeToByteArray()
+            socket_client.outputQueue.offer(bytearrayString, 1000, timeU)
+        }
+        strTobyte.start()
+        strTobyte.join()
+    }
+
+    private fun revByteArrayToString() {
+        val catchTimer = Timer("revByteArrayToString").schedule(0, 10) {
+            if (!socket_client.inputQueue.isNullOrEmpty()) {
+                val inputByteArray = socket_client.inputQueue.poll(1000, timeU)
+                if (inputByteArray != null) {
+                    inputString = inputByteArray.decodeToString()
+                    println("catch:$inputString")
+                }
+            }
+            if (!socketIsChecked) {
+                cancel()
+            }
+        }
+        catchTimer.run()
+    }
 }
 
 

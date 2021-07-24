@@ -21,7 +21,7 @@
         app:layout_constraintVertical_bias="0.239" />
 
     <Button
-        android:id="@+id/infer_change"
+        android:id="@+id/infer_change_btn"
         android:layout_width="125dp"
         android:layout_height="49dp"
         android:background="#2196F3"

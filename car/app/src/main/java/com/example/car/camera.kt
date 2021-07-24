@@ -134,6 +134,10 @@ class camera : AppCompatActivity() {
                 angle_json_L = -1.0 * strength_run
             }
             send_move(angle_json_L, angle_json_R)
+
+            if (angle == 0 && strength == 0) {
+                send_move(0.0, 0.0)
+            }
         }
     }
 
@@ -189,43 +193,6 @@ class camera : AppCompatActivity() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-    }
-
-    var count = 0
-
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (count == 0) {
-                Toast.makeText(this, "按兩次即關閉APP", Toast.LENGTH_SHORT).show()
-            }
-            if (count == 1) {
-                Toast.makeText(this, "再按一次即關閉APP", Toast.LENGTH_SHORT).show()
-            }
-            if (count == 2) {
-                close_app()
-            }
-            count++
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
-    }
-
-    var logoutJson = JSONObject()
-    var exitJson = JSONObject()
-
-    fun close_app() {
-        logoutJson.put("CMD", "LOGOUT")
-        exitJson.put("CMD", "EXIT")
-        to_stream(false)
-        Thread.sleep(100)
-        sendJsonToByteArray(logoutJson)
-        Thread.sleep(100)
-        sendJsonToByteArray(exitJson)
-        Thread.sleep(100)
-        receiveCheck = false
-        finishAffinity()
-        System.exit(0)
     }
 
     override fun onPause() {

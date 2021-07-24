@@ -1,9 +1,6 @@
 package com.example.car
 
-import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
-import java.io.EOFException
-import java.io.InputStream
+import java.io.*
 import java.net.ConnectException
 import java.net.Socket
 import java.net.SocketException
@@ -32,12 +29,15 @@ class socket_client : Thread() {
         try {
             var socket = Socket(MainActivity.ip, MainActivity.port_car)
             sleep(100)
+//            socket.soTimeout = 30000
             println("Socket start")
             socketConnection=socket.isConnected
             activate(socket)
         } catch (e: ConnectException) {
             this.connection = false
             e.printStackTrace()
+        } catch (e:IOException){
+            this.connection=false
         }
     }
 
@@ -82,6 +82,9 @@ class socket_client : Thread() {
         var outputStream = ByteArrayOutputStream()
         outputStream.write(receiveAll(inputStream, head))
         var inputStringByteArray = outputStream.toByteArray()
+        if (inputStringByteArray.toString()=="-1"){
+            println("close")
+        }
         inputQueue.offer(inputStringByteArray,1000,time_u)
     }
 

@@ -66,6 +66,7 @@ class check : AppCompatActivity() {
                         var log_ch = js_ob.getString("VERIFY").toBoolean()
                         if (log_ch) {
                             infoCheck = false
+                            MainActivity.socketIsChecked=true
                             println("驗證成功")
                             backCd.cancel()
                             NextActivity()//進入下一個頁面 start_tap
