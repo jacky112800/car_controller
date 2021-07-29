@@ -38,6 +38,7 @@ class socket_client : Thread() {
             e.printStackTrace()
         } catch (e:IOException){
             this.connection=false
+            e.printStackTrace()
         }
     }
 

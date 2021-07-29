@@ -22,6 +22,7 @@
     <string name="infer_w">寬：</string>
     <string name="infer_change">確定</string>
     <string name="infer_change_title">解析度變更</string>
+    <string name="camera_item">未開啟物件偵測</string>
 
 
 

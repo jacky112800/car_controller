@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
+import kotlinx.android.synthetic.main.activity_camera.*
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -27,10 +28,8 @@ import kotlin.concurrent.thread
 
 class camera : AppCompatActivity() {
 
-    private var m_angle_tv: TextView? = null
-    private var m_strength_tv: TextView? = null
+    var itemTextView: TextView? = null
     var time_u: TimeUnit = TimeUnit.MILLISECONDS
-
 
     var inputstring = ""
     var receiveCheck = false
@@ -42,9 +41,6 @@ class camera : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
-
-        m_angle_tv = findViewById<View>(R.id.angle_tv) as TextView
-        m_strength_tv = findViewById<View>(R.id.strength_tv) as TextView
 
 
     }
@@ -72,8 +68,6 @@ class camera : AppCompatActivity() {
 
     fun joystickListen(joystick: JoystickView) {
         joystick.setOnMoveListener { angle, strength ->
-            m_angle_tv!!.setText(angle.toString())
-            m_strength_tv!!.setText(strength.toString())
 
             strength_run = (strength.toDouble() / 100)
             angle_run = Math.floor((angle_run * 10))
@@ -169,6 +163,7 @@ class camera : AppCompatActivity() {
                 if (inputstring != "") {
                     val json_data = inputstring
                     val js_ob = JSONObject(json_data)
+
                     //如果CMD標籤內的字串為FRAME時
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
@@ -183,6 +178,7 @@ class camera : AppCompatActivity() {
                             runOnUiThread { img_view_car.setImageBitmap(bitmap) }
                         }
                     }
+
 
                 }
                 if (!receiveCheck) {

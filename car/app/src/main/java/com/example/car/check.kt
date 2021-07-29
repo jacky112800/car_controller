@@ -17,7 +17,7 @@ class check : AppCompatActivity() {
     var count = 0
 
     var time_u: TimeUnit = TimeUnit.MILLISECONDS
-    var login_json = JSONObject()
+    var loginJson = JSONObject()
     var infoCheck = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,9 +47,9 @@ class check : AppCompatActivity() {
 
         checkThread.start()
         byteToString.start()
-        login_json.put("CMD", "LOGIN")
-        login_json.put("PWD", MainActivity.PWD)
-        sendJsonToByteArray(login_json)
+        loginJson.put("CMD", "LOGIN")
+        loginJson.put("PWD", MainActivity.PWD)
+        sendJsonToByteArray(loginJson)
         checkThread.join()
         byteToString.join()
     }
