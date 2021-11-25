@@ -170,8 +170,7 @@ class camera : AppCompatActivity() {
                     if (js_ob.getString("CMD") == "FRAME") {
                         var img_b64 = js_ob.getString("IMAGE")
                         var jpg_data = Base64.getDecoder().decode(img_b64)
-                        val bitmap =
-                            BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+                        val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
                         //如果bitmap不為空就顯示圖片
                         //由於bitmap為空會產生錯誤,所以必須要有這一步驟
                         if (bitmap != null) {
@@ -199,8 +198,8 @@ class camera : AppCompatActivity() {
 
     fun to_stream(str_stream: Boolean) {
         var stream_json = JSONObject()
-        stream_json.put("CMD", "IS_STREAM")
-        stream_json.put("IS_STREAM", str_stream)
+        stream_json.put("CMD", "SET_STREAM")
+        stream_json.put("SET_STREAM", str_stream)
         println(stream_json)
         sendJsonToByteArray(stream_json)
     }

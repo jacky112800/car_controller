@@ -36,7 +36,7 @@ class infer_change : AppCompatActivity() {
 
     fun toJson(inferH: String, inferW: String) {
         var inferJson = JSONObject()
-        inferJson.put("CMD", "SET_QUALITY")
+        inferJson.put("CMD", "SET_RESOLUTION")
         inferJson.put("WIDTH", inferW)
         inferJson.put("HEIGHT", inferH)
 

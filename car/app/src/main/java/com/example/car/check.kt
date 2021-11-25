@@ -62,7 +62,7 @@ class check : AppCompatActivity() {
                     var js_ob = JSONObject(inputstring)
                     var log_info = js_ob.getString("CMD")
 
-                    if (log_info == "LOG_INFO") {
+                    if (log_info == "LOGIN_INFO") {
                         var log_ch = js_ob.getString("VERIFY").toBoolean()
                         if (log_ch) {
                             infoCheck = false
