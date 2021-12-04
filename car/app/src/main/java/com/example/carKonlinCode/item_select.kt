@@ -1,14 +1,12 @@
-package com.example.car
+package com.example.carKonlinCode
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_item_select.*
 import org.json.JSONObject
-import java.security.AccessController.getContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -16,8 +14,8 @@ import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
 class item_select : AppCompatActivity() {
-    var time_u: TimeUnit = TimeUnit.MILLISECONDS
-    var inputstring = ""
+    var timeU: TimeUnit = TimeUnit.MILLISECONDS
+    var inputString = ""
     var receiveCheck = true
     var itemSpinner: Spinner? = null
     var selectSendButton: Button? = null
@@ -64,7 +62,7 @@ class item_select : AppCompatActivity() {
 
     var stringArray = arrayListOf<String>("")
     fun itemConfigSend() {
-        var configJSONObject=JSONObject()
+        var configJSONObject = JSONObject()
         var spinnerSelectString = ""
         itemSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -82,15 +80,15 @@ class item_select : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                spinnerSelectString=""
+                spinnerSelectString = ""
             }
         }
         selectSendButton?.setOnClickListener {
-            if (spinnerSelectString!=""){
-                configJSONObject.put("CMD","SET_CONFIG")
-                configJSONObject.put("CONFIG",spinnerSelectString)
-            }else{
-                Toast.makeText(this,"尚未選擇物件",Toast.LENGTH_SHORT).show()
+            if (spinnerSelectString != "") {
+                configJSONObject.put("CMD", "SET_CONFIG")
+                configJSONObject.put("CONFIG", spinnerSelectString)
+            } else {
+                Toast.makeText(this, "尚未選擇物件", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -98,8 +96,8 @@ class item_select : AppCompatActivity() {
 
     fun spinnerChange() {
         val spinnerChangeTimer = Timer("spinnerChange").schedule(0, 50) {
-            if (inputstring != "") {
-                val inputJsonObject = JSONObject(inputstring)
+            if (inputString != "") {
+                val inputJsonObject = JSONObject(inputString)
                 val configInfo = inputJsonObject.getString("CMD")
                 if (configInfo == "CONFIGS") {
                     val configStringArray = inputJsonObject.getString("CONFIGS")
@@ -121,10 +119,7 @@ class item_select : AppCompatActivity() {
 
     fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
-            var string = jsonObject.toString()
-            println(string)
-            var bytearrayString = string.encodeToByteArray()
-            socket_client.outputQueue.offer(bytearrayString, 1000, time_u)
+            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
         }
         strTobyte.start()
         strTobyte.join()
@@ -133,10 +128,10 @@ class item_select : AppCompatActivity() {
     fun recvByteArrayToString() {
         val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
             if (!socket_client.inputQueue.isNullOrEmpty()) {
-                val inputByteArray = socket_client.inputQueue.poll(1000, time_u)
-                if (inputByteArray != null) {
-                    inputstring = inputByteArray.decodeToString()
-                    println("catch:$inputstring")
+                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
+                if (inputJSONObject != null) {
+                    inputString = inputJSONObject
+                    println("catch:$inputString")
                 }
             }
             if (!receiveCheck) {

@@ -1,4 +1,4 @@
-package com.example.car
+package com.example.carKonlinCode
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +16,7 @@ import kotlin.concurrent.thread
 class check : AppCompatActivity() {
     var count = 0
 
-    var time_u: TimeUnit = TimeUnit.MILLISECONDS
+    var timeU: TimeUnit = TimeUnit.MILLISECONDS
     var loginJson = JSONObject()
     var infoCheck = true
 
@@ -39,7 +39,7 @@ class check : AppCompatActivity() {
         }
     }//六秒後沒有回應返回登入頁面
 
-    var inputstring = ""
+    var inputString = ""
 
     fun sendInfo() {
         var checkThread = thread(start = false) { check() }
@@ -58,15 +58,15 @@ class check : AppCompatActivity() {
         try {
 //            while (infoCheck) {
             val infoCheckTimer = Timer("recvByteArrayToString").schedule(0, 10) {
-                if (inputstring != "") {
-                    var js_ob = JSONObject(inputstring)
+                if (inputString != "") {
+                    var js_ob = JSONObject(inputString)
                     var log_info = js_ob.getString("CMD")
 
                     if (log_info == "LOGIN_INFO") {
                         var log_ch = js_ob.getString("VERIFY").toBoolean()
                         if (log_ch) {
                             infoCheck = false
-                            MainActivity.socketIsChecked=true
+                            MainActivity.socketIsChecked = true
                             println("驗證成功")
                             backCd.cancel()
                             NextActivity()//進入下一個頁面 start_tap
@@ -84,9 +84,7 @@ class check : AppCompatActivity() {
             infoCheckTimer.run()
         } catch (e: JSONException) {
             e.printStackTrace()
-
         }
-
     }
 
     fun NextActivity() {
@@ -108,10 +106,7 @@ class check : AppCompatActivity() {
 
     fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
-            var string = jsonObject.toString()
-            println(string)
-            var bytearrayString = string.encodeToByteArray()
-            socket_client.outputQueue.offer(bytearrayString, 1000, time_u)
+            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
         }
         strTobyte.start()
         strTobyte.join()
@@ -120,10 +115,10 @@ class check : AppCompatActivity() {
     fun recvByteArrayToString() {
         val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
             if (!socket_client.inputQueue.isNullOrEmpty()) {
-                val inputByteArray = socket_client.inputQueue.poll(1000, time_u)
-                if (inputByteArray != null) {
-                    inputstring = inputByteArray.decodeToString()
-                    println("catch:$inputstring")
+                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
+                if (inputJSONObject != null) {
+                    inputString = inputJSONObject
+                    println("catch:$inputString")
                 }
             }
             if (!infoCheck) {

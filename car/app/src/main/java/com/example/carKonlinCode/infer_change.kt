@@ -1,4 +1,4 @@
-package com.example.car
+package com.example.carKonlinCode
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -45,10 +45,7 @@ class infer_change : AppCompatActivity() {
 
     fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
-            var string = jsonObject.toString()
-            println(string)
-            var bytearrayString = string.encodeToByteArray()
-            socket_client.outputQueue.offer(bytearrayString, 1000, time_u)
+            socket_client.outputQueue.offer(jsonObject.toString(), 1000, time_u)
         }
         strTobyte.start()
         strTobyte.join()

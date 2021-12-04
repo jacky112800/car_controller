@@ -1,13 +1,11 @@
-package com.example.car
+package com.example.carKonlinCode
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_camera.*
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -166,20 +164,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendJsonToByteArray(jsonObject: JSONObject) {
         var strTobyte = thread(start = false) {
-            var string = jsonObject.toString()
-            var bytearrayString = string.encodeToByteArray()
-            socket_client.outputQueue.offer(bytearrayString, 1000, timeU)
+            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
         }
         strTobyte.start()
         strTobyte.join()
     }
 
     private fun revByteArrayToString() {
-        val catchTimer = Timer("revByteArrayToString").schedule(0, 10) {
+        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
             if (!socket_client.inputQueue.isNullOrEmpty()) {
-                val inputByteArray = socket_client.inputQueue.poll(1000, timeU)
-                if (inputByteArray != null) {
-                    inputString = inputByteArray.decodeToString()
+                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
+                if (inputJSONObject != null) {
+                    inputString = inputJSONObject
                     println("catch:$inputString")
                 }
             }
