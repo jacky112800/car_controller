@@ -26,11 +26,12 @@ class camera : AppCompatActivity() {
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
     var inputString = ""
+    var frameString = ""
     var receiveCheck = false
-    var angle_run: Double = 0.0
-    var strength_run = 0.0
-    var angle_json_L = 0.0
-    var angle_json_R = 0.0
+    var angleCarRun: Double = 0.0
+    var strengthCarRun = 0.0
+    var angleJsonLeft = 0.0
+    var angleJsonRight = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +45,17 @@ class camera : AppCompatActivity() {
         val joystick = findViewById<JoystickView>(R.id.joystickView_car)
         val joystickThread = thread(start = false) { joystickListen(joystick) }
         val readByteArray = thread(start = false) { recvByteArrayToString() }
+        val readFrameJSONObject = thread(start = false) { recvFrameToString() }
         val drawThread = thread(start = false) { draw_json() }
         receiveCheck = true
         joystickThread.start()
         readByteArray.start()
+        readFrameJSONObject.start()
         drawThread.start()
         to_stream(true)
         joystickThread.join()
         readByteArray.join()
+        readFrameJSONObject.join()
         drawThread.join()
     }
 
@@ -63,68 +67,68 @@ class camera : AppCompatActivity() {
     fun joystickListen(joystick: JoystickView) {
         Timer("delaySendMove", false).schedule(200) {
             joystick.setOnMoveListener { angle, strength ->
-                strength_run = (strength.toDouble() / 100)
-                angle_run = Math.floor((angle_run * 10))
-                angle_run = angle_run / 10
+                strengthCarRun = (strength.toDouble() / 100)
+                angleCarRun = Math.floor((angleCarRun * 10))
+                angleCarRun /= 10
 
                 if ((angle > 0) && (angle < 180)) {
                     val angle_c = angle
-                    angle_run = ((angle_c.toDouble() - 90) / 90)
-                    angle_run = Math.floor((angle_run * 10))
-                    angle_run = angle_run / 10
+                    angleCarRun = ((angle_c.toDouble() - 90) / 90)
+                    angleCarRun = Math.floor((angleCarRun * 10))
+                    angleCarRun /= 10
 
                     if ((angle > 0) && (angle < 90)) {
-                        angle_run = 1 + angle_run
-                        angle_run = Math.floor((angle_run * 10))
-                        angle_run = angle_run / 10
-                        angle_json_R = angle_run * strength_run
-                        angle_json_L = 1.0 * strength_run
+                        angleCarRun += 1
+                        angleCarRun = Math.floor((angleCarRun * 10))
+                        angleCarRun /= 10
+                        angleJsonRight = angleCarRun * strengthCarRun
+                        angleJsonLeft = 1.0 * strengthCarRun
                     }
 
                     if ((angle > 90) && (angle < 180)) {
-                        angle_run = 1 - angle_run
-                        angle_run = Math.floor((angle_run * 10))
-                        angle_run = -(angle_run / 10)
-                        angle_json_R = 1.0 * strength_run
-                        angle_json_L = -angle_run * strength_run
+                        angleCarRun = 1 - angleCarRun
+                        angleCarRun = Math.floor((angleCarRun * 10))
+                        angleCarRun = -(angleCarRun / 10)
+                        angleJsonRight = 1.0 * strengthCarRun
+                        angleJsonLeft = -angleCarRun * strengthCarRun
                     }
                 }
 
                 if ((angle > 180) && (angle < 360)) {
                     val angle_c = angle
-                    angle_run = ((angle_c.toDouble() - 270) / 90)
-                    angle_run = Math.floor((angle_run * 10))
-                    angle_run = angle_run / 10
+                    angleCarRun = ((angle_c.toDouble() - 270) / 90)
+                    angleCarRun = Math.floor((angleCarRun * 10))
+                    angleCarRun /= 10
 
                     if ((angle > 180) && (angle < 270)) {
-                        angle_run = 1 + angle_run
-                        angle_run = Math.floor((angle_run * 10))
-                        angle_run = -(angle_run / 10)
-                        angle_json_R = -1.0 * strength_run
-                        angle_json_L = angle_run * strength_run
+                        angleCarRun = 1 + angleCarRun
+                        angleCarRun = Math.floor((angleCarRun * 10))
+                        angleCarRun = -(angleCarRun / 10)
+                        angleJsonRight = -1.0 * strengthCarRun
+                        angleJsonLeft = angleCarRun * strengthCarRun
                     }
 
                     if ((angle > 270) && (angle < 360)) {
-                        angle_run = 1 - angle_run
-                        angle_run = Math.floor((angle_run * 10))
-                        angle_run = angle_run / 10
-                        angle_json_R = -angle_run * strength_run
-                        angle_json_L = -1.0 * strength_run
+                        angleCarRun = 1 - angleCarRun
+                        angleCarRun = Math.floor((angleCarRun * 10))
+                        angleCarRun /= 10
+                        angleJsonRight = -angleCarRun * strengthCarRun
+                        angleJsonLeft = -1.0 * strengthCarRun
                     }
                 }
 
                 if (angle == 90) {
-                    angle_json_R = 1.0 * strength_run
-                    angle_json_L = 1.0 * strength_run
+                    angleJsonRight = 1.0 * strengthCarRun
+                    angleJsonLeft = 1.0 * strengthCarRun
                 }
                 if (angle == 180) {
-                    angle_json_R = -1.0 * strength_run
-                    angle_json_L = -1.0 * strength_run
+                    angleJsonRight = -1.0 * strengthCarRun
+                    angleJsonLeft = -1.0 * strengthCarRun
                 }
-                send_move(angle_json_L, angle_json_R)
+                send_move(angleJsonLeft, angleJsonRight)
 
                 if (angle == 0 && strength == 0) {
-                    Timer("returnToZero",false).schedule(200){
+                    Timer("returnToZero", false).schedule(200) {
                         send_move(0.0, 0.0)
                     }
                 }
@@ -158,24 +162,22 @@ class camera : AppCompatActivity() {
             //將全域變數的圖像資料取用
             val drawTimer = Timer("draw").schedule(0, 30) {
                 if (inputString != "") {
-                    val json_data = inputString
-                    val js_ob = JSONObject(json_data)
+                    val jsonData = frameString
+                    val frameObject = JSONObject(jsonData)
 
                     //如果CMD標籤內的字串為FRAME時
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
-                    if (js_ob.getString("CMD") == "FRAME") {
-                        var img_b64 = js_ob.getString("IMAGE")
-                        var jpg_data = Base64.getDecoder().decode(img_b64)
-                        val bitmap = BitmapFactory.decodeByteArray(jpg_data, 0, jpg_data.size)
+                    if (frameObject.getString("CMD") == "FRAME") {
+                        var imgBase64 = frameObject.getString("IMAGE")
+                        var jpgData = Base64.getDecoder().decode(imgBase64)
+                        val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
                         //如果bitmap不為空就顯示圖片
                         //由於bitmap為空會產生錯誤,所以必須要有這一步驟
                         if (bitmap != null) {
                             runOnUiThread { img_view_car.setImageBitmap(bitmap) }
                         }
                     }
-
-
                 }
                 if (!receiveCheck) {
                     cancel()
@@ -214,7 +216,23 @@ class camera : AppCompatActivity() {
             if (!socket_client.inputQueue.isNullOrEmpty()) {
                 val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
                 if (inputJSONObject != null) {
-                    inputString = inputJSONObject
+                    inputString = inputJSONObject.toString()
+                    println("catch:$inputString")
+                }
+            }
+            if (!receiveCheck) {
+                cancel()
+            }
+        }
+        catchTimer.run()
+    }
+
+    fun recvFrameToString() {
+        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
+            if (!socket_client.inputQueue.isNullOrEmpty()) {
+                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
+                if (inputJSONObject != null) {
+                    frameString = inputJSONObject.toString()
                     println("catch:$inputString")
                 }
             }

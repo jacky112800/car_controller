@@ -33,13 +33,13 @@ class socket_client : Thread() {
             sleep(100)
 //            socket.soTimeout = 30000
             println("Socket start")
-            socketConnection=socket.isConnected
+            socketConnection = socket.isConnected
             activate(socket)
         } catch (e: ConnectException) {
             this.connection = false
             e.printStackTrace()
-        } catch (e:IOException){
-            this.connection=false
+        } catch (e: IOException) {
+            this.connection = false
             e.printStackTrace()
         }
     }
@@ -85,14 +85,15 @@ class socket_client : Thread() {
         var outputStream = ByteArrayOutputStream()
         outputStream.write(receiveAll(inputStream, head))
         var inputStringJSON = outputStream.toByteArray().decodeToString()
-        if (inputStringJSON.toString()=="-1"){
+        if (inputStringJSON.toString() == "-1") {
             println("close")
         }
-        val inputStringJSONObject =JSONObject(inputStringJSON)
-        if (inputStringJSONObject.getString("CMD") == "FRAME"){
-            frameBufferQueue.offer(inputStringJSONObject,1000,time_u)
+        val inputStringJSONObject = JSONObject(inputStringJSON)
+        if (inputStringJSONObject.getString("CMD") == "FRAME") {
+            frameBufferQueue.offer(inputStringJSONObject, 1000, time_u)
+        } else {
+            inputQueue.offer(inputStringJSONObject, 1000, time_u)
         }
-        inputQueue.offer(inputStringJSONObject,1000,time_u)
     }
 
     private fun receiveAll(data_in: InputStream, buffSize: Int): ByteArray {
@@ -117,8 +118,8 @@ class socket_client : Thread() {
             while (this.connection) {
                 var outputData = outputQueue.poll(1000, time_u).encodeToByteArray()
                 if (outputData.isNotEmpty()) {
-                    println(outputData.size.toString()+"socket")
-                    println(outputData.decodeToString()+"socket")
+                    println(outputData.size.toString() + "socket")
+                    println(outputData.decodeToString() + "socket")
                     outputStream.writeInt(outputData.size)
                     outputStream.write(outputData)
                 }

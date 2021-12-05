@@ -175,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             if (!socket_client.inputQueue.isNullOrEmpty()) {
                 val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
                 if (inputJSONObject != null) {
-                    inputString = inputJSONObject
+                    inputString = inputJSONObject.toString()
                     println("catch:$inputString")
                 }
             }
