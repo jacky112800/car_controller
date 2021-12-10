@@ -6,8 +6,10 @@ import java.net.ConnectException
 import java.net.Socket
 import java.net.SocketException
 import java.nio.ByteBuffer
+import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
 class socket_client : Thread() {
@@ -15,10 +17,11 @@ class socket_client : Thread() {
         val inputQueue = LinkedBlockingQueue<JSONObject>()
         val outputQueue = LinkedBlockingQueue<String>()
         val frameBufferQueue = LinkedBlockingQueue<JSONObject>()
+        var inputCmdString=""
     }
 
     var connection = true
-    var time_u: TimeUnit = TimeUnit.MILLISECONDS
+    var timeU: TimeUnit = TimeUnit.MILLISECONDS
     var socketConnection = false
 
     override fun run() {
@@ -46,8 +49,8 @@ class socket_client : Thread() {
 
     fun activate(socket: Socket) {
 
-        var recv = thread(start = false) { this.receive(socket) }
-        var send = thread(start = false) { this.sendMessage(socket) }
+        val recv = thread(start = false) { this.receive(socket) }
+        val send = thread(start = false) { this.sendMessage(socket) }
 
         sleep(100)
 
@@ -90,9 +93,9 @@ class socket_client : Thread() {
         }
         val inputStringJSONObject = JSONObject(inputStringJSON)
         if (inputStringJSONObject.getString("CMD") == "FRAME") {
-            frameBufferQueue.offer(inputStringJSONObject, 1000, time_u)
+            frameBufferQueue.offer(inputStringJSONObject, 1000, timeU)
         } else {
-            inputQueue.offer(inputStringJSONObject, 1000, time_u)
+            inputQueue.offer(inputStringJSONObject, 1000, timeU)
         }
     }
 
@@ -116,7 +119,7 @@ class socket_client : Thread() {
         var outputStream = DataOutputStream(socket.getOutputStream())
         try {
             while (this.connection) {
-                var outputData = outputQueue.poll(1000, time_u).encodeToByteArray()
+                var outputData = outputQueue.poll(1000, timeU).encodeToByteArray()
                 if (outputData.isNotEmpty()) {
                     println(outputData.size.toString() + "socket")
                     println(outputData.decodeToString() + "socket")
@@ -132,6 +135,31 @@ class socket_client : Thread() {
             e.printStackTrace()
         }
     }
+
+//------------------建置中未完成------------------
+    fun pollJSONQueueToInputCMDString() {
+        val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
+            if (!inputQueue.isNullOrEmpty()) {
+                val inputJSONObject = inputQueue.poll(1000, timeU)
+                if (inputJSONObject != null) {
+                    inputCmdString = inputJSONObject.toString()
+                    println("catch:$inputCmdString")
+                }
+            }
+            if (!socketConnection) {
+                cancel()
+            }
+        }
+        catchTimer.run()
+    }
+
+    fun sendJsonToByteArray(jsonObject: JSONObject) {
+        var strToByte = thread(start = false) {
+            outputQueue.offer(jsonObject.toString(), 1000, timeU)
+        }
+        strToByte.start()
+    }
+//------------------建置中未完成------------------
 
     fun closeSocket(socket: Socket) {
         this.connection = false

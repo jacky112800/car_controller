@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         var PWD: String = ""
         var port_car = 65536
         var th: socket_client = socket_client()
+        var doJsonCommand:jsonCommand=jsonCommand()
         var socketIsChecked = false
     }
 
@@ -167,7 +168,6 @@ class MainActivity : AppCompatActivity() {
             socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
         }
         strTobyte.start()
-        strTobyte.join()
     }
 
     private fun revByteArrayToString() {

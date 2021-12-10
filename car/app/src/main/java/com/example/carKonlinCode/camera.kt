@@ -125,30 +125,26 @@ class camera : AppCompatActivity() {
                     angleJsonRight = -1.0 * strengthCarRun
                     angleJsonLeft = -1.0 * strengthCarRun
                 }
-                send_move(angleJsonLeft, angleJsonRight)
+                sendMove(angleJsonLeft, angleJsonRight)
 
                 if (angle == 0 && strength == 0) {
                     Timer("returnToZero", false).schedule(200) {
-                        send_move(0.0, 0.0)
+                        sendMove(0.0, 0.0)
                     }
                 }
             }
         }
     }
 
-    fun send_move(L: Double, R: Double) {
+    fun sendMove(L: Double, R: Double) {
         //將要傳送的字串(指令)放進標籤為CMD的JSON
         //此為專為移動數值所設
-        var sendMoveThread = thread(start = false) {
-            var moveJson = JSONObject()
-            moveJson.put("CMD", "MOV")
-            moveJson.put("L", L)
-            moveJson.put("R", R)
-            println(moveJson)
-            sendJsonToByteArray(moveJson)
-        }
-        sendMoveThread.start()
-        sendMoveThread.join()
+        val moveJson = JSONObject()
+        moveJson.put("CMD", "MOV")
+        moveJson.put("L", L)
+        moveJson.put("R", R)
+        println(moveJson)
+        sendJsonToByteArray(moveJson)
     }
 
     fun to_setting(view: View) {
