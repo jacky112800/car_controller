@@ -36,7 +36,7 @@
         android:layout_width="61dp"
         android:layout_height="68dp"
         android:background="@drawable/ic_menu_manage"
-        android:onClick="to_setting"
+        android:onClick="toSettingIntent"
         android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

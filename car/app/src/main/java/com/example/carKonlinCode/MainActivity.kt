@@ -24,12 +24,11 @@ class MainActivity : AppCompatActivity() {
         var PWD: String = ""
         var port_car = 65536
         var th: socket_client = socket_client()
-        var doJsonCommand:jsonCommand=jsonCommand()
+        var doJsonCommand: jsonCommand = jsonCommand()
         var socketIsChecked = false
     }
 
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
-    var inputString = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +39,11 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "登出中請稍候", Toast.LENGTH_SHORT).show()
             logout()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        MainActivity.th.pollJSONQueueToInputCMDString()
     }
 
     fun text_ent() {
@@ -123,18 +127,13 @@ class MainActivity : AppCompatActivity() {
         android.os.Process.killProcess(android.os.Process.myPid())
     }
 
-    var logoutJson = JSONObject()
 
     private fun logout() {
-        val catchLogoutMessage = thread(start = false) { revByteArrayToString() }
+//        val catchLogoutMessage = thread(start = false) { revByteArrayToString() }
         val checkSeverLogoutThread = thread(start = false) { checkServerLogout() }
-        logoutJson.put("CMD", "LOGOUT")
-        Thread.sleep(100)
-        sendJsonToByteArray(logoutJson)
-        Thread.sleep(100)
-        catchLogoutMessage.start()
+        doJsonCommand.logoutJSON()
         checkSeverLogoutThread.start()
-        catchLogoutMessage.join()
+        Thread.sleep(100)
         checkSeverLogoutThread.join()
         Thread.sleep(100)
     }
@@ -143,8 +142,8 @@ class MainActivity : AppCompatActivity() {
         try {
             //將全域變數的圖像資料取用
             val drawTimer = Timer("checkServer").schedule(0, 30) {
-                if (inputString != "") {
-                    val jsonData = inputString
+                if (socket_client.inputCmdString != "") {
+                    val jsonData = socket_client.inputCmdString
                     val jsonObject = JSONObject(jsonData)
 
                     if (jsonObject.getString("CMD") == "SYS_LOGOUT") {
@@ -163,28 +162,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendJsonToByteArray(jsonObject: JSONObject) {
-        var strTobyte = thread(start = false) {
-            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
-        }
-        strTobyte.start()
-    }
+//    private fun sendJsonToByteArray(jsonObject: JSONObject) {
+//        var strTobyte = thread(start = false) {
+//            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
+//        }
+//        strTobyte.start()
+//    }
 
-    private fun revByteArrayToString() {
-        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
-            if (!socket_client.inputQueue.isNullOrEmpty()) {
-                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
-                if (inputJSONObject != null) {
-                    inputString = inputJSONObject.toString()
-                    println("catch:$inputString")
-                }
-            }
-            if (!socketIsChecked) {
-                cancel()
-            }
-        }
-        catchTimer.run()
-    }
+//    private fun revByteArrayToString() {
+//        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
+//            if (!socket_client.inputQueue.isNullOrEmpty()) {
+//                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
+//                if (inputJSONObject != null) {
+//                    inputString = inputJSONObject.toString()
+//                    println("catch:$inputString")
+//                }
+//            }
+//            if (!socketIsChecked) {
+//                cancel()
+//            }
+//        }
+//        catchTimer.run()
+//    }
 
 
 }

@@ -10,10 +10,10 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
-class infer_change : AppCompatActivity() {
-    var inferH = ""
-    var inferW = ""
-    var time_u: TimeUnit = TimeUnit.MILLISECONDS
+class qualityChange : AppCompatActivity() {
+    var qualityWidth = ""
+    var qualityHeight = ""
+    var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,28 +26,10 @@ class infer_change : AppCompatActivity() {
             if (infer_h_text.text.isNullOrEmpty() && infer_w_text.text.isNullOrEmpty()) {
                 Toast.makeText(this, "請勿輸入空白", Toast.LENGTH_SHORT).show()
             } else {
-                inferH = infer_h_text.text.toString()
-                inferW = infer_w_text.text.toString()
-                toJson(inferH, inferW)
-
+                qualityWidth = infer_w_text.text.toString()
+                qualityHeight = infer_h_text.text.toString()
+                MainActivity.doJsonCommand.setQualityJSON(qualityWidth, qualityHeight)
             }
         }
-    }
-
-    fun toJson(inferH: String, inferW: String) {
-        var inferJson = JSONObject()
-        inferJson.put("CMD", "SET_RESOLUTION")
-        inferJson.put("WIDTH", inferW)
-        inferJson.put("HEIGHT", inferH)
-
-        sendJsonToByteArray(inferJson)
-    }
-
-    fun sendJsonToByteArray(jsonObject: JSONObject) {
-        var strTobyte = thread(start = false) {
-            socket_client.outputQueue.offer(jsonObject.toString(), 1000, time_u)
-        }
-        strTobyte.start()
-        strTobyte.join()
     }
 }

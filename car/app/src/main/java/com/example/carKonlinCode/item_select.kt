@@ -15,7 +15,6 @@ import kotlin.concurrent.thread
 
 class item_select : AppCompatActivity() {
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
-    var inputString = ""
     var receiveCheck = true
     var itemSpinner: Spinner? = null
     var selectSendButton: Button? = null
@@ -26,16 +25,13 @@ class item_select : AppCompatActivity() {
         setContentView(R.layout.activity_item_select)
         itemSpinner = findViewById<Spinner>(R.id.item_select_spinner)
         selectSendButton = findViewById<Button>(R.id.btn_select_confirm)
-        val getItemConfigJSONObject = JSONObject()
+//        val getItemConfigJSONObject = JSONObject()
 
-        val readByteArray = thread(start = false) { recvByteArrayToString() }
         val viewItemInfo = thread(start = false) { spinnerChange() }
-        readByteArray.start()
         viewItemInfo.start()
         itemSelectSwitch()
-        getItemConfigJSONObject.put("CMD", "GET_CONFIGS")
-        sendJsonToByteArray(getItemConfigJSONObject)
-        readByteArray.join()
+//        getItemConfigJSONObject.put("CMD", "GET_CONFIGS")
+//        sendJsonToByteArray(getItemConfigJSONObject)
         viewItemInfo.join()
     }
 
@@ -47,18 +43,12 @@ class item_select : AppCompatActivity() {
     private fun itemSelectSwitch() {
         item_select_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             when (isChecked) {
-                false -> itemSelectSwitchJsonObject("false")
-                true -> itemSelectSwitchJsonObject("true")
+                false -> MainActivity.doJsonCommand.setInferJSON(false)
+                true -> MainActivity.doJsonCommand.setInferJSON(true)
             }
         }
     }
 
-    fun itemSelectSwitchJsonObject(itemSelectSwitchString: String) {
-        var itemSelectJson = JSONObject()
-        itemSelectJson.put("CMD", "SET_INFER")
-        itemSelectJson.put("INFER", itemSelectSwitchString)
-        sendJsonToByteArray(itemSelectJson)
-    }
 
     var stringArray = arrayListOf<String>("")
     fun itemConfigSend() {
@@ -85,8 +75,7 @@ class item_select : AppCompatActivity() {
         }
         selectSendButton?.setOnClickListener {
             if (spinnerSelectString != "") {
-                configJSONObject.put("CMD", "SET_CONFIG")
-                configJSONObject.put("CONFIG", spinnerSelectString)
+                MainActivity.doJsonCommand.setConfigJSON(spinnerSelectString)
             } else {
                 Toast.makeText(this, "尚未選擇物件", Toast.LENGTH_SHORT).show()
             }
@@ -96,6 +85,7 @@ class item_select : AppCompatActivity() {
 
     fun spinnerChange() {
         val spinnerChangeTimer = Timer("spinnerChange").schedule(0, 50) {
+            val inputString = socket_client.inputCmdString
             if (inputString != "") {
                 val inputJsonObject = JSONObject(inputString)
                 val configInfo = inputJsonObject.getString("CMD")
@@ -115,30 +105,6 @@ class item_select : AppCompatActivity() {
             }
         }
         spinnerChangeTimer.run()
-    }
-
-    fun sendJsonToByteArray(jsonObject: JSONObject) {
-        var strTobyte = thread(start = false) {
-            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
-        }
-        strTobyte.start()
-        strTobyte.join()
-    }
-
-    fun recvByteArrayToString() {
-        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
-            if (!socket_client.inputQueue.isNullOrEmpty()) {
-                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
-                if (inputJSONObject != null) {
-                    inputString = inputJSONObject.toString()
-                    println("catch:$inputString")
-                }
-            }
-            if (!receiveCheck) {
-                cancel()
-            }
-        }
-        catchTimer.run()
     }
 
     override fun onDestroy() {

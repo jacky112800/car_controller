@@ -17,7 +17,9 @@ class socket_client : Thread() {
         val inputQueue = LinkedBlockingQueue<JSONObject>()
         val outputQueue = LinkedBlockingQueue<String>()
         val frameBufferQueue = LinkedBlockingQueue<JSONObject>()
-        var inputCmdString=""
+        var inputCmdString = ""
+        var inputFrameString = ""
+        var configString = ""
     }
 
     var connection = true
@@ -119,12 +121,14 @@ class socket_client : Thread() {
         var outputStream = DataOutputStream(socket.getOutputStream())
         try {
             while (this.connection) {
-                var outputData = outputQueue.poll(1000, timeU).encodeToByteArray()
-                if (outputData.isNotEmpty()) {
-                    println(outputData.size.toString() + "socket")
-                    println(outputData.decodeToString() + "socket")
-                    outputStream.writeInt(outputData.size)
-                    outputStream.write(outputData)
+                if (!outputQueue.isNullOrEmpty()) {
+                    val outputData = outputQueue.poll(1000, timeU).encodeToByteArray()
+                    if (outputData.isNotEmpty()) {
+                        println(outputData.size.toString() + "socket")
+                        println(outputData.decodeToString() + "socket")
+                        outputStream.writeInt(outputData.size)
+                        outputStream.write(outputData)
+                    }
                 }
             }
         } catch (e: EOFException) {
@@ -136,29 +140,32 @@ class socket_client : Thread() {
         }
     }
 
-//------------------建置中未完成------------------
+    //------------------建置中未完成------------------
     fun pollJSONQueueToInputCMDString() {
-        val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
-            if (!inputQueue.isNullOrEmpty()) {
-                val inputJSONObject = inputQueue.poll(1000, timeU)
-                if (inputJSONObject != null) {
-                    inputCmdString = inputJSONObject.toString()
-                    println("catch:$inputCmdString")
+        val pollCmdQueue = thread(start = false) {
+            val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
+                if (!inputQueue.isNullOrEmpty()) {
+                    val inputJSONObject = inputQueue.poll(1000, timeU)
+                    if (inputJSONObject != null) {
+                        inputCmdString = inputJSONObject.toString()
+                        println("catch:$inputCmdString")
+                    }
+                }
+                if (!socketConnection) {
+                    cancel()
                 }
             }
-            if (!socketConnection) {
-                cancel()
-            }
+            catchTimer.run()
         }
-        catchTimer.run()
+        pollCmdQueue.start()
     }
 
-    fun sendJsonToByteArray(jsonObject: JSONObject) {
-        var strToByte = thread(start = false) {
-            outputQueue.offer(jsonObject.toString(), 1000, timeU)
-        }
-        strToByte.start()
-    }
+//    fun sendJsonToByteArray(jsonObject: JSONObject) {
+//        var strToByte = thread(start = false) {
+//            outputQueue.offer(jsonObject.toString(), 1000, timeU)
+//        }
+//        strToByte.start()
+//    }
 //------------------建置中未完成------------------
 
     fun closeSocket(socket: Socket) {

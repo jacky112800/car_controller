@@ -17,8 +17,8 @@ class check : AppCompatActivity() {
     var count = 0
 
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
-    var loginJson = JSONObject()
     var infoCheck = true
+    var backCdBoolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,51 +28,51 @@ class check : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        MainActivity.th.pollJSONQueueToInputCMDString()
         sendInfo()
     }
 
-    var backCd = Timer("backCd").schedule(1000, 1000) {
-        count++
-        println(count)
-        if (count >= 6) {
-            go_back()
-        }
-    }//六秒後沒有回應返回登入頁面
-
-    var inputString = ""
 
     fun sendInfo() {
-        var checkThread = thread(start = false) { check() }
-        var byteToString = thread(start = false) { recvByteArrayToString() }
-
+        val checkThread = thread(start = false) { check() }
+        val backMainActivityTimer = thread(start = false) {
+            val backCd = Timer("backCd").schedule(1000, 1000) {
+                count++
+                println(count)
+                if (count >= 6) {
+                    go_back()
+                }
+                if (backCdBoolean) {
+                    cancel()
+                }
+            }//六秒後沒有回應返回登入頁面
+            backCd.run()
+        }
         checkThread.start()
-        byteToString.start()
-        loginJson.put("CMD", "LOGIN")
-        loginJson.put("PWD", MainActivity.PWD)
-        sendJsonToByteArray(loginJson)
+        backMainActivityTimer.start()
+        MainActivity.doJsonCommand.loginJSON()
         checkThread.join()
-        byteToString.join()
     }
 
     fun check() {
         try {
 //            while (infoCheck) {
             val infoCheckTimer = Timer("recvByteArrayToString").schedule(0, 10) {
+                val inputString = socket_client.inputCmdString
                 if (inputString != "") {
-                    var js_ob = JSONObject(inputString)
-                    var log_info = js_ob.getString("CMD")
-
-                    if (log_info == "LOGIN_INFO") {
-                        var log_ch = js_ob.getString("VERIFY").toBoolean()
-                        if (log_ch) {
+                    val jsonObject = JSONObject(inputString)
+                    val logInfo = jsonObject.getString("CMD")
+                    if (logInfo == "LOGIN_INFO") {
+                        val logCheck = jsonObject.getString("VERIFY").toBoolean()
+                        if (logCheck) {
                             infoCheck = false
                             MainActivity.socketIsChecked = true
                             println("驗證成功")
-                            backCd.cancel()
+                            backCdBoolean = true
                             NextActivity()//進入下一個頁面 start_tap
                             cancel()//取消本timer
                         }
-                        if (!log_ch) {
+                        if (!logCheck) {
                             infoCheck = false
                             go_back()
                             cancel()
@@ -88,8 +88,8 @@ class check : AppCompatActivity() {
     }
 
     fun NextActivity() {
-        val check_intent = Intent(this, start_tap::class.java)
-        startActivity(check_intent)
+        val checkIntent = Intent(this, start_tap::class.java)
+        startActivity(checkIntent)
     }
 
 
@@ -97,34 +97,26 @@ class check : AppCompatActivity() {
         Looper.prepare()
         infoCheck = false
         Toast.makeText(this, "主機無回應\r\n請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-        val check_intent = Intent(this, MainActivity::class.java)
-        startActivity(check_intent)
-        backCd.cancel()
+        val checkIntent = Intent(this, MainActivity::class.java)
+        startActivity(checkIntent)
+        backCdBoolean = true
         Looper.loop()
 
     }
 
-    fun sendJsonToByteArray(jsonObject: JSONObject) {
-        var strTobyte = thread(start = false) {
-            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
-        }
-        strTobyte.start()
-        strTobyte.join()
-    }
-
-    fun recvByteArrayToString() {
-        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
-            if (!socket_client.inputQueue.isNullOrEmpty()) {
-                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
-                if (inputJSONObject != null) {
-                    inputString = inputJSONObject.toString()
-                    println("catch:$inputString")
-                }
-            }
-            if (!infoCheck) {
-                cancel()
-            }
-        }
-        catchTimer.run()
-    }
+//    fun recvByteArrayToString() {
+//        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
+//            if (!socket_client.inputQueue.isNullOrEmpty()) {
+//                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
+//                if (inputJSONObject != null) {
+//                    inputString = inputJSONObject.toString()
+//                    println("catch:$inputString")
+//                }
+//            }
+//            if (!infoCheck) {
+//                cancel()
+//            }
+//        }
+//        catchTimer.run()
+//    }
 }
