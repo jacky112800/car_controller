@@ -1,4 +1,4 @@
-package com.example.carKonlinCode
+package com.example.carKotlinCode
 
 import org.json.JSONObject
 import java.io.*
@@ -160,12 +160,24 @@ class socket_client : Thread() {
         pollCmdQueue.start()
     }
 
-//    fun sendJsonToByteArray(jsonObject: JSONObject) {
-//        var strToByte = thread(start = false) {
-//            outputQueue.offer(jsonObject.toString(), 1000, timeU)
-//        }
-//        strToByte.start()
-//    }
+    fun pollFrameQueueToInputCMDString() {
+        val pollFrameQueue = thread(start = false) {
+            val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
+                if (!frameBufferQueue.isNullOrEmpty()) {
+                    val inputJSONObject = frameBufferQueue.poll(1000, timeU)
+                    if (inputJSONObject != null) {
+                        inputFrameString = inputJSONObject.toString()
+                        println("catch:$inputFrameString")
+                    }
+                }
+                if (!socketConnection) {
+                    cancel()
+                }
+            }
+            catchTimer.run()
+        }
+        pollFrameQueue.start()
+    }
 //------------------建置中未完成------------------
 
     fun closeSocket(socket: Socket) {

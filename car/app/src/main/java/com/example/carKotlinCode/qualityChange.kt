@@ -1,4 +1,4 @@
-package com.example.carKonlinCode
+package com.example.carKotlinCode
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,9 +6,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_infer_change.*
-import org.json.JSONObject
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 class qualityChange : AppCompatActivity() {
     var qualityWidth = ""

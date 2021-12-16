@@ -1,4 +1,4 @@
-package com.example.carKonlinCode
+package com.example.carKotlinCode
 
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -41,6 +41,7 @@ class camera : AppCompatActivity() {
         val drawThread = thread(start = false) { draw_json() }
         receiveCheck = true
         MainActivity.th.pollJSONQueueToInputCMDString()
+        MainActivity.th.pollFrameQueueToInputCMDString()
         joystickThread.start()
         drawThread.start()
         MainActivity.doJsonCommand.setStreamJSON(true)
