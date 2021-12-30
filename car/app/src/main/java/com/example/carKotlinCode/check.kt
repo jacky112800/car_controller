@@ -28,8 +28,9 @@ class check : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        MainActivity.th.pollJSONQueueToInputCMDString()
-        sendInfo()
+//        MainActivity.th.pollJSONQueueToInputCMDString()
+//        sendInfo()
+        testCheck()
     }
 
 
@@ -92,6 +93,12 @@ class check : AppCompatActivity() {
         startActivity(checkIntent)
     }
 
+    fun testCheck(){
+        infoCheck = false
+        MainActivity.socketIsChecked = true
+        backCdBoolean = true
+        NextActivity()//進入下一個頁面 start_tap
+    }
 
     fun go_back() {
         Looper.prepare()
