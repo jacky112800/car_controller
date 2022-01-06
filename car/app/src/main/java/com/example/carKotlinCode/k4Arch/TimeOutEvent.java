@@ -56,7 +56,6 @@ public abstract class TimeOutEvent extends Thread {
                 }
             }
         };
-
         timeOutEvent.start();
         System.out.println(timeOutEvent.wait(2000, TimeUnit.MILLISECONDS));
         try {
