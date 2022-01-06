@@ -1,12 +1,13 @@
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+public abstract class TimeOutEvent extends Thread {
+    Lock lock = new ReentrantLock();
+    Condition condition = lock.newCondition();
 
-public class TimeOutEvent extends Thread {
-    private final Lock rLock = new ReentrantLock();
-    private final Condition condition = rLock.newCondition();
+    abstract void timeOutFunction();
 
     @Override
     public void run() {
@@ -14,28 +15,22 @@ public class TimeOutEvent extends Thread {
         disable_wait();
     }
 
-    public void timeOutFunction() {
-        /*
-         * implement time out function
-         */
-    }
-
-    void disable_wait() {
+    private void disable_wait() {
         try {
-            this.rLock.lock();
+            this.lock.lock();
             this.condition.signalAll();
         } finally {
-            this.rLock.unlock();
+            this.lock.unlock();
         }
     }
 
     boolean wait(long time, TimeUnit unit) {
-        boolean flag = false;
         if (!this.isAlive()) {
             return true;
         }
+        boolean flag = false;
         try {
-            rLock.lock();
+            this.lock.lock();
             flag = this.condition.await(time, unit);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -43,27 +38,31 @@ public class TimeOutEvent extends Thread {
             if (!flag) {
                 this.interrupt();
             }
-            rLock.unlock();
+            this.lock.unlock();
         }
         return flag;
     }
 
-
     public static void main(String[] args) {
-
         TimeOutEvent timeOutEvent = new TimeOutEvent() {
             @Override
-            public void timeOutFunction() {
+            void timeOutFunction() {
+                //TODO: overwrite this
+                System.out.println("do something");
                 try {
-                    System.out.println("Start func");
-                    Thread.sleep(2000);
-                    System.out.println("End func");
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    System.out.println("timeout function thread interrupt");
+                    e.printStackTrace();
                 }
             }
         };
+
         timeOutEvent.start();
-        System.out.println("is function finish before waiting time: " + timeOutEvent.wait(3000, TimeUnit.MILLISECONDS));
+        System.out.println(timeOutEvent.wait(2000, TimeUnit.MILLISECONDS));
+        try {
+            timeOutEvent.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
