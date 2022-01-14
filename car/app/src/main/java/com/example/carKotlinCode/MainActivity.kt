@@ -88,11 +88,18 @@ class MainActivity : AppCompatActivity() {
                         ctBoolean = false
                         val intent = Intent(this, check::class.java)
                         startActivity(intent)//進入驗證頁面 check.kt
+                    }else if(!th.socketConnection){
+                        Looper.prepare()
+                        ctBoolean = false
+                        Toast.makeText(this, "連線失敗，請檢查主機是否異常。", Toast.LENGTH_SHORT)
+                            .show()
+                        restartApp()
+                        Looper.loop()
                     }
                     if (th.state == Thread.State.TERMINATED) {//避免重複start class當狀態為終止時重啟app
                         Looper.prepare()
                         ctBoolean = false
-                        Toast.makeText(this, "連線失敗，請點擊再次登入鈕，\n以便重新開啟應用程式再嘗試。", Toast.LENGTH_SHORT)
+                        Toast.makeText(this, "連線失敗，請檢查主機是否異常。", Toast.LENGTH_SHORT)
                             .show()
                         restartApp()
                         Looper.loop()

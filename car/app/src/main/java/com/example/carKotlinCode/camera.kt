@@ -24,10 +24,8 @@ class camera : AppCompatActivity() {
     var itemTextView: TextView? = null
 
     var receiveCheck = false
-    var angleCarRun: Double = 0.0
-    var strengthCarRun = 0.0
-    var angleJsonLeft = 0.0
-    var angleJsonRight = 0.0
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,68 +54,12 @@ class camera : AppCompatActivity() {
     fun joystickListen(joystick: JoystickView) {
         Timer("delaySendMove", false).schedule(200) {
             joystick.setOnMoveListener { angle, strength ->
-                strengthCarRun = (strength.toDouble() / 100)
-                angleCarRun = Math.floor((angleCarRun * 10))
-                angleCarRun /= 10
+                val strengthCarRun = (strength / 100).toFloat()
 
-                if ((angle > 0) && (angle < 180)) {
-                    val angle_c = angle
-                    angleCarRun = ((angle_c.toDouble() - 90) / 90)
-                    angleCarRun = Math.floor((angleCarRun * 10))
-                    angleCarRun /= 10
-
-                    if ((angle > 0) && (angle < 90)) {
-                        angleCarRun += 1
-                        angleCarRun = Math.floor((angleCarRun * 10))
-                        angleCarRun /= 10
-                        angleJsonRight = angleCarRun * strengthCarRun
-                        angleJsonLeft = 1.0 * strengthCarRun
-                    }
-
-                    if ((angle > 90) && (angle < 180)) {
-                        angleCarRun = 1 - angleCarRun
-                        angleCarRun = Math.floor((angleCarRun * 10))
-                        angleCarRun = -(angleCarRun / 10)
-                        angleJsonRight = 1.0 * strengthCarRun
-                        angleJsonLeft = -angleCarRun * strengthCarRun
-                    }
-                }
-
-                if ((angle > 180) && (angle < 360)) {
-                    val angle_c = angle
-                    angleCarRun = ((angle_c.toDouble() - 270) / 90)
-                    angleCarRun = Math.floor((angleCarRun * 10))
-                    angleCarRun /= 10
-
-                    if ((angle > 180) && (angle < 270)) {
-                        angleCarRun = 1 + angleCarRun
-                        angleCarRun = Math.floor((angleCarRun * 10))
-                        angleCarRun = -(angleCarRun / 10)
-                        angleJsonRight = -1.0 * strengthCarRun
-                        angleJsonLeft = angleCarRun * strengthCarRun
-                    }
-
-                    if ((angle > 270) && (angle < 360)) {
-                        angleCarRun = 1 - angleCarRun
-                        angleCarRun = Math.floor((angleCarRun * 10))
-                        angleCarRun /= 10
-                        angleJsonRight = -angleCarRun * strengthCarRun
-                        angleJsonLeft = -1.0 * strengthCarRun
-                    }
-                }
-
-                if (angle == 90) {
-                    angleJsonRight = 1.0 * strengthCarRun
-                    angleJsonLeft = 1.0 * strengthCarRun
-                }
-                if (angle == 180) {
-                    angleJsonRight = -1.0 * strengthCarRun
-                    angleJsonLeft = -1.0 * strengthCarRun
-                }
-                MainActivity.doJsonCommand.movJSON(angleJsonLeft,angleJsonRight)
+                MainActivity.doJsonCommand.movJSON(strengthCarRun, angle)
                 if (angle == 0 && strength == 0) {
                     Timer("returnToZero", false).schedule(200) {
-                        MainActivity.doJsonCommand.movJSON(0.0,0.0)
+                        MainActivity.doJsonCommand.movJSON(0f, 0)
                     }
                 }
             }

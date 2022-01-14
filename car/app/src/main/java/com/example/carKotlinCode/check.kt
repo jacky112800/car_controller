@@ -57,14 +57,13 @@ class check : AppCompatActivity() {
 
     fun check() {
         try {
-//            while (infoCheck) {
             val infoCheckTimer = Timer("recvByteArrayToString").schedule(0, 10) {
                 val inputString = socket_client.inputCmdString
                 if (inputString != "") {
                     val jsonObject = JSONObject(inputString)
                     val logInfo = jsonObject.getString("CMD")
                     if (logInfo == "LOGIN_INFO") {
-                        val logCheck = jsonObject.getString("VERIFY").toBoolean()
+                        val logCheck = jsonObject.getBoolean("VERIFY")
                         if (logCheck) {
                             infoCheck = false
                             MainActivity.socketIsChecked = true

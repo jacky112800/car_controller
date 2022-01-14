@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit
 
 class jsonCommand : Thread() {
     val timeU = TimeUnit.MILLISECONDS
-    
+
     fun loginJSON() {
         val loginJSONObject = JSONObject()
         loginJSONObject.put("CMD", "LOGIN")
@@ -80,11 +80,11 @@ class jsonCommand : Thread() {
         sendJsonToByteArray(qualityJSONObject)
     }
 
-    fun movJSON(L: Double, R: Double) {
+    fun movJSON(strength: Float, angle: Int) {
         val moveJSONObject = JSONObject()
         moveJSONObject.put("CMD", "MOV")
-        moveJSONObject.put("L", L)
-        moveJSONObject.put("R", R)
+        moveJSONObject.put("THETA ", angle)
+        moveJSONObject.put("R", strength)
         sendJsonToByteArray(moveJSONObject)
     }
 
