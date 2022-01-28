@@ -30,6 +30,7 @@ class check : AppCompatActivity() {
         super.onStart()
 //        MainActivity.th.pollJSONQueueToInputCMDString()
 //        sendInfo()
+
         testCheck()
     }
 

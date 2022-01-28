@@ -3,6 +3,7 @@ package com.example.carKotlinCode
 import org.json.JSONObject
 import java.io.*
 import java.net.ConnectException
+import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
 import java.nio.ByteBuffer
@@ -24,32 +25,44 @@ class socket_client : Thread() {
 
     var connection = true
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
-    var socketConnection = false
+    var socket = Socket()
 
-    override fun run() {
-        println("Socket connect")
-        this.socketConnect()
-        println("Socket end")
+//    override fun run() {
+//        println("Socket connect")
+//        this.socketConnect()
+//        println("Socket end")
+//    }
+
+    fun isConnection(): Boolean {
+        return this.socket.isConnected
     }
 
     fun socketConnect() {
         try {
-            var socket = Socket(MainActivity.ip, MainActivity.port_car)
+            val inetSocketAddress = InetSocketAddress(MainActivity.ip, MainActivity.port_car)
+            socket.connect(inetSocketAddress)
             sleep(100)
-//            socket.soTimeout = 30000
             println("Socket start")
-            socketConnection = socket.isConnected
-            activate(socket)
+//            run(socket)
         } catch (e: ConnectException) {
-            this.connection = false
+            closeSocket(socket)
             e.printStackTrace()
         } catch (e: IOException) {
-            this.connection = false
+            closeSocket(socket)
             e.printStackTrace()
         }
     }
 
-    fun activate(socket: Socket) {
+    private fun closeSocket(socket: Socket) {
+        this.connection = false
+        socket.close()
+    }
+
+    //    @Override
+    override fun run() {
+        if (!this.isConnection()) {
+            return
+        }
 
         val recv = thread(start = false) { this.receive(socket) }
         val send = thread(start = false) { this.sendMessage(socket) }
@@ -65,17 +78,21 @@ class socket_client : Thread() {
 
     private fun receive(socket: Socket) {
         println("Socket receive")
-        var inputStream = socket.getInputStream()
+        val inputStream = socket.getInputStream()
         while (this.connection) {
             try {
                 this.receiveMessage(inputStream)
             } catch (e: EOFException) {
-                this.connection = false
-                socket.close()
+                closeSocket(socket)
                 e.printStackTrace()
             } catch (e: SocketException) {
-                this.connection = false
-                socket.close()
+                closeSocket(socket)
+                e.printStackTrace()
+            } catch (e: InterruptedException) {
+                closeSocket(socket)
+                e.printStackTrace()
+            } catch (e: IOException) {
+                closeSocket(socket)
                 e.printStackTrace()
             }
         }
@@ -94,11 +111,9 @@ class socket_client : Thread() {
             println("close")
         }
         val inputStringJSONObject = JSONObject(inputStringJSON)
-        if (inputStringJSONObject.getString("CMD") == "FRAME") {
-            frameBufferQueue.offer(inputStringJSONObject, 1000, timeU)
-        } else {
-            inputQueue.offer(inputStringJSONObject, 1000, timeU)
-        }
+
+        inputQueue.offer(inputStringJSONObject, 1000, timeU)
+
     }
 
     private fun receiveAll(data_in: InputStream, buffSize: Int): ByteArray {
@@ -137,10 +152,15 @@ class socket_client : Thread() {
         } catch (e: SocketException) {
             closeSocket(socket)
             e.printStackTrace()
+        } catch (e: InterruptedException) {
+            closeSocket(socket)
+            e.printStackTrace()
+        } catch (e: IOException) {
+            closeSocket(socket)
+            e.printStackTrace()
         }
     }
 
-    //------------------建置中未完成------------------
     fun pollJSONQueueToInputCMDString() {
         val pollCmdQueue = thread(start = false) {
             val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
@@ -151,7 +171,7 @@ class socket_client : Thread() {
                         println("catch:$inputCmdString")
                     }
                 }
-                if (!socketConnection) {
+                if (!isConnection()) {
                     cancel()
                 }
             }
@@ -170,7 +190,7 @@ class socket_client : Thread() {
                         println("catch:$inputFrameString")
                     }
                 }
-                if (!socketConnection) {
+                if (!isConnection()) {
                     cancel()
                 }
             }
@@ -178,12 +198,7 @@ class socket_client : Thread() {
         }
         pollFrameQueue.start()
     }
-//------------------建置中未完成------------------
 
-    fun closeSocket(socket: Socket) {
-        this.connection = false
-        socket.close()
-    }
 
 }
 

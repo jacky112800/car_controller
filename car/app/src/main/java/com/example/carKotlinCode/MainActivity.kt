@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        text_ent()
+        textEvent()
         if (socketIsChecked) {
             Toast.makeText(this, "登出中請稍候", Toast.LENGTH_SHORT).show()
             logout()
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         MainActivity.th.pollJSONQueueToInputCMDString()
     }
 
-    fun text_ent() {
+    fun textEvent() {
         ip_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         PWD_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         start_btn.setOnClickListener {
@@ -55,12 +55,12 @@ class MainActivity : AppCompatActivity() {
             } else {
                 PWD = PWD_input.text.toString()
                 try {
-                    val ip_list = ip_input.text.toString().split(":")
-                    ip = ip_list[0]
-                    port_car = ip_list[1].toInt()
+                    val ipList = ip_input.text.toString().split(":")
+                    ip = ipList[0]
+                    port_car = ipList[1].toInt()
                     println(ip + "\n" + port_car)
                     Thread.sleep(100)
-                    tojson()
+                    toJson()
                 } catch (e: Exception) {
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun tojson() {
+    private fun toJson() {
         try {
             var ctBoolean = true
             var clientThread = thread(start = false) {
@@ -82,20 +82,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            var clientThread_check = thread(start = false) {
+            var clientThreadCheck = thread(start = false) {
                 while (ctBoolean) {
-                    if (th.socketConnection && !socketIsChecked) {//連線成功時進入下一個頁面
+                    if (th.isConnection() && !socketIsChecked) {//連線成功時進入下一個頁面
                         ctBoolean = false
                         val intent = Intent(this, check::class.java)
                         startActivity(intent)//進入驗證頁面 check.kt
-                    }else if(!th.socketConnection){
-                        Looper.prepare()
-                        ctBoolean = false
-                        Toast.makeText(this, "連線失敗，請檢查主機是否異常。", Toast.LENGTH_SHORT)
-                            .show()
-                        restartApp()
-                        Looper.loop()
                     }
+//                    if(!th.isConnect()){
+//                        sleep(5000)
+//                        Looper.prepare()
+//                        ctBoolean = false
+//                        Toast.makeText(this, "連線失敗，請檢查主機是否異常。", Toast.LENGTH_SHORT)
+//                            .show()
+//                        Looper.loop()
+//                    }
                     if (th.state == Thread.State.TERMINATED) {//避免重複start class當狀態為終止時重啟app
                         Looper.prepare()
                         ctBoolean = false
@@ -108,9 +109,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             clientThread.start()
-            clientThread_check.start()
-            clientThread.join()
-            clientThread_check.join()
+            clientThreadCheck.start()
+
 
         } catch (e: ConnectException) {
             Looper.prepare()
@@ -168,31 +168,6 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-//    private fun sendJsonToByteArray(jsonObject: JSONObject) {
-//        var strTobyte = thread(start = false) {
-//            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
-//        }
-//        strTobyte.start()
-//    }
-
-//    private fun revByteArrayToString() {
-//        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
-//            if (!socket_client.inputQueue.isNullOrEmpty()) {
-//                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
-//                if (inputJSONObject != null) {
-//                    inputString = inputJSONObject.toString()
-//                    println("catch:$inputString")
-//                }
-//            }
-//            if (!socketIsChecked) {
-//                cancel()
-//            }
-//        }
-//        catchTimer.run()
-//    }
-
-
 }
 
 

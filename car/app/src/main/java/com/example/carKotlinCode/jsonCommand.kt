@@ -4,6 +4,9 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 class jsonCommand : Thread() {
+    companion object{
+
+    }
     val timeU = TimeUnit.MILLISECONDS
 
     fun loginJSON() {

@@ -36,7 +36,7 @@ class camera : AppCompatActivity() {
         super.onStart()
         val joystick = findViewById<JoystickView>(R.id.joystickView_car)
         val joystickThread = thread(start = false) { joystickListen(joystick) }
-        val drawThread = thread(start = false) { draw_json() }
+        val drawThread = thread(start = false) { drawJson() }
         receiveCheck = true
         MainActivity.th.pollJSONQueueToInputCMDString()
         MainActivity.th.pollFrameQueueToInputCMDString()
@@ -54,7 +54,7 @@ class camera : AppCompatActivity() {
     fun joystickListen(joystick: JoystickView) {
         Timer("delaySendMove", false).schedule(200) {
             joystick.setOnMoveListener { angle, strength ->
-                val strengthCarRun = (strength / 100).toFloat()
+                val strengthCarRun:Float=strength.toFloat()/100
 
                 MainActivity.doJsonCommand.movJSON(strengthCarRun, angle)
                 if (angle == 0 && strength == 0) {
@@ -71,7 +71,7 @@ class camera : AppCompatActivity() {
         startActivity(intentSetting)
     }
 
-    fun draw_json() {
+    fun drawJson() {
         val imgViewCar = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
             //將全域變數的圖像資料取用
@@ -83,8 +83,8 @@ class camera : AppCompatActivity() {
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
                     if (frameObject.getString("CMD") == "FRAME") {
-                        var imgBase64 = frameObject.getString("IMAGE")
-                        var jpgData = Base64.getDecoder().decode(imgBase64)
+                        val imgBase64 = frameObject.getString("IMAGE")
+                        val jpgData = Base64.getDecoder().decode(imgBase64)
                         val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
                         //如果bitmap不為空就顯示圖片
                         //由於bitmap為空會產生錯誤,所以必須要有這一步驟

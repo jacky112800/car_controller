@@ -1,76 +1,89 @@
 package com.example.myapplication
 
-import com.example.carKotlinCode.jsonCommand
+import com.example.carKotlinCode.MainActivity
 import com.example.carKotlinCode.socket_client
 import org.json.JSONObject
-import java.util.concurrent.LinkedBlockingQueue
-import kotlin.collections.HashMap
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
-class clientAction:Thread() {
-    private val clientSocket = ClientSocket()
-    private var serverConfigs: HashMap<String, Any>? = null
-    private val frameBuffer = LinkedBlockingQueue<HashMap<String, Any>>()
-    private val eventThread = Thread()
+class clientAction : Thread() {
+    companion object{
+//        val frameBufferQueue = LinkedBlockingQueue<JSONObject>()
+    }
+    private val clientSocket = socket_client()
+    private var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
-    fun activate() {
-        this.eventThread.start()
+    fun verify(passWord: String) {
+        if (!clientSocket.isConnection()) {
+            return
+        }
+//        val login: JSONObject = CommandFactory.LOGIN()
+//        login.put("PWD", passWord)
+        try {
+            MainActivity.doJsonCommand.loginJSON()
+//            if (!loginInfo.getBoolean("VERIFY")) {
+//                this.closeSocket(socket)
+//            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 
-    private fun eventLoop() {
-        while (this.clientSocket.isConnect()) {
-            //預計更改為從buffer中poll出
-            val commands = this.clientSocket.getCommand()
-            if (commands.isEmpty()) {
-                continue
+    private fun isConnection(): Boolean {
+        return clientSocket.isConnection()
+    }
+
+    override fun run() {
+        //event loop
+        while (this.isConnection()) {
+            if (!socket_client.inputQueue.isNullOrEmpty()) {
+                val jsonObject = socket_client.inputQueue.poll(1000,timeU)
+                event(jsonObject)
             }
-            this.event(commands)
-        }
-        /*
-         * after while loop
-         * shutdown app or back to homepage
-         */
-    }
-
-    private fun event(command: HashMap<String, Any>) {
-        /*
-         * event function maybe return null or Map (send to server)
-         */
-        var returnValue: HashMap<String, Any>? = null
-        when (command["CMD"]) {
-            "FRAME" ->
-                returnValue = this.frameEvent(command)
-            "CONFIG" ->
-                this.configsEvent(command)
-            else -> return
-            //escape this function
-
-        }
-        if (returnValue != null) {
-            this.clientSocket.putCommand(returnValue)
         }
     }
 
-    private fun frameEvent(command: HashMap<String, Any>): HashMap<String, Any>? {
-        val jsonObject:JSONObject=JSONObject(command as HashMap<*, *>?)
-        socket_client.frameBufferQueue.offer(jsonObject)
-        return null
+    private fun event(jsonObject: JSONObject) {
+        val jsonObjectCmd = jsonObject.getString("CMD")
+        when(jsonObjectCmd){
+            "FRAME" -> frameEvent(jsonObject)
+
+        }
+        if (jsonObjectCmd == "FRAME") {
+            frameEvent(jsonObject)
+        } else if (jsonObjectCmd == "CONFIGS") {
+            configsEvent(jsonObject)
+        }
     }
 
-    private fun configsEvent(command: HashMap<String, Any>): HashMap<String, Any>? {
-        this.serverConfigs = command
-        return null
+    private fun frameEvent(jsonObject: JSONObject) {
+        try {
+            socket_client.frameBufferQueue.offer(jsonObject, 1000, TimeUnit.MILLISECONDS)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
     }
 
-    fun getConfigsFromServer(): HashMap<String, Any>? {
-        return this.serverConfigs
+    private fun configsEvent(jsonObject: JSONObject) {
+//        this.configs = jsonObject
     }
 
-    fun getFrameFromServer(): HashMap<String, Any>? {
-        return null
-    }
+//    fun getFrame(jsonObject: JSONObject?) {
+//        try {
+//            this.frameBuffer.poll(1000, TimeUnit.MILLISECONDS)
+//        } catch (e: InterruptedException) {
+//            e.printStackTrace()
+//        }
+//    }
 
-    fun isConnect(): Boolean {
-        return this.clientSocket.isConnect()
-    }
+//    fun putCommand(jsonObject: JSONObject?) {
+//        this.clientConnection.put(jsonObject)
+//    }
+
+
+//    fun getConfigs(): JSONObject? {
+//        return this.configs
+//    }
+
 
 }
