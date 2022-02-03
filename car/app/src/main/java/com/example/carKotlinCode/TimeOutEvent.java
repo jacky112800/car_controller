@@ -1,3 +1,5 @@
+package com.example.carKotlinCode;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -43,25 +45,4 @@ public abstract class TimeOutEvent extends Thread {
         return flag;
     }
 
-    public static void main(String[] args) {
-        TimeOutEvent timeOutEvent = new TimeOutEvent() {
-            @Override
-            void timeOutFunction() {
-                //TODO: overwrite this
-                System.out.println("do something");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        timeOutEvent.start();
-        System.out.println(timeOutEvent.wait(2000, TimeUnit.MILLISECONDS));
-        try {
-            timeOutEvent.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }

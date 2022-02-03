@@ -2,6 +2,7 @@ package com.example.carKotlinCode
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -38,7 +39,6 @@ class camera : AppCompatActivity() {
         val joystickThread = thread(start = false) { joystickListen(joystick) }
         val drawThread = thread(start = false) { draw_json() }
         receiveCheck = true
-        MainActivity.th.pollJSONQueueToInputCMDString()
         MainActivity.th.pollFrameQueueToInputCMDString()
         joystickThread.start()
         drawThread.start()
@@ -83,9 +83,21 @@ class camera : AppCompatActivity() {
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
                     if (frameObject.getString("CMD") == "FRAME") {
-                        var imgBase64 = frameObject.getString("IMAGE")
-                        var jpgData = Base64.getDecoder().decode(imgBase64)
+                        val imgBase64 = frameObject.getString("IMAGE")
+                        val jpgData = Base64.getDecoder().decode(imgBase64)
                         val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
+//                        if(frameObject.has("BBOX")){
+//                            var canvas =Canvas(bitmap)
+//                            val bboxArray=frameObject.get("BBOX") as Array<IntArray>
+//                            val intBboxArray=Array(bboxArray.size){IntArray(bboxArray.size*5)}
+//                            for(rowIndex in bboxArray.indices) {
+//                                for(colIndex in 0 until 5) {
+//                                    if(colIndex == rowIndex) {
+//                                        intBboxArray[rowIndex][colIndex]=bboxArray[rowIndex][colIndex]
+//                                    }
+//                                }
+//                            }
+//                        }
                         //如果bitmap不為空就顯示圖片
                         //由於bitmap為空會產生錯誤,所以必須要有這一步驟
                         if (bitmap != null) {

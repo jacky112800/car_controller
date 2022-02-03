@@ -1,76 +1,84 @@
-package com.example.myapplication
-
-import com.example.carKotlinCode.jsonCommand
+import com.example.carKotlinCode.MainActivity
 import com.example.carKotlinCode.socket_client
 import org.json.JSONObject
-import java.util.concurrent.LinkedBlockingQueue
-import kotlin.collections.HashMap
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 
-class clientAction:Thread() {
-    private val clientSocket = ClientSocket()
-    private var serverConfigs: HashMap<String, Any>? = null
-    private val frameBuffer = LinkedBlockingQueue<HashMap<String, Any>>()
-    private val eventThread = Thread()
-
-    fun activate() {
-        this.eventThread.start()
+class clientAction : Thread() {
+    companion object {
+//        val frameBufferQueue = LinkedBlockingQueue<JSONObject>()
     }
 
-    private fun eventLoop() {
-        while (this.clientSocket.isConnect()) {
-            //預計更改為從buffer中poll出
-            val commands = this.clientSocket.getCommand()
-            if (commands.isEmpty()) {
-                continue
+    //    private val clientSocket = socket_client()
+    private var timeU: TimeUnit = TimeUnit.MILLISECONDS
+
+    fun verify(): Boolean {
+        try {
+            MainActivity.doJsonCommand.loginJSON()
+            sleep(1000)
+            return if (!socket_client.inputQueue.isNullOrEmpty()) {
+                val loginInfo = socket_client.inputQueue.poll(1000, timeU)
+                when (loginInfo.getBoolean("VERIFY")) {
+                    true -> {
+                        println("驗證成功")
+                        true
+                    }
+                    false -> {
+                        println("驗證失敗")
+                        MainActivity.th.closeSocket()
+                        false
+                    }
+                }
+            }else{
+                println("驗證失敗(null)")
+                MainActivity.th.closeSocket()
+                false
             }
-            this.event(commands)
-        }
-        /*
-         * after while loop
-         * shutdown app or back to homepage
-         */
-    }
-
-    private fun event(command: HashMap<String, Any>) {
-        /*
-         * event function maybe return null or Map (send to server)
-         */
-        var returnValue: HashMap<String, Any>? = null
-        when (command["CMD"]) {
-            "FRAME" ->
-                returnValue = this.frameEvent(command)
-            "CONFIG" ->
-                this.configsEvent(command)
-            else -> return
-            //escape this function
-
-        }
-        if (returnValue != null) {
-            this.clientSocket.putCommand(returnValue)
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
         }
     }
 
-    private fun frameEvent(command: HashMap<String, Any>): HashMap<String, Any>? {
-        val jsonObject:JSONObject=JSONObject(command as HashMap<*, *>?)
-        socket_client.frameBufferQueue.offer(jsonObject)
-        return null
+    private fun isConnection(): Boolean {
+        return MainActivity.th.isConnection()
     }
 
-    private fun configsEvent(command: HashMap<String, Any>): HashMap<String, Any>? {
-        this.serverConfigs = command
-        return null
+    override fun run() {
+        //event loop
+        while (this.isConnection()) {
+            if (!socket_client.inputQueue.isNullOrEmpty()) {
+                val jsonObject = socket_client.inputQueue.poll(1000, timeU)
+                event(jsonObject)
+            }
+            sleep(10)
+        }
     }
 
-    fun getConfigsFromServer(): HashMap<String, Any>? {
-        return this.serverConfigs
+    private fun event(jsonObject: JSONObject) {
+        val jsonObjectCmd = jsonObject.getString("CMD")
+        when (jsonObjectCmd) {
+            "FRAME" -> frameEvent(jsonObject)
+            "CONFIGS" -> configsEvent(jsonObject)
+            "SYS_LOGOUT" -> logoutEvent()
+        }
+
     }
 
-    fun getFrameFromServer(): HashMap<String, Any>? {
-        return null
+    private fun frameEvent(jsonObject: JSONObject) {
+        try {
+            socket_client.frameBufferQueue.offer(jsonObject, 1000, TimeUnit.MILLISECONDS)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
     }
 
-    fun isConnect(): Boolean {
-        return this.clientSocket.isConnect()
+    private fun configsEvent(jsonObject: JSONObject) {
+        MainActivity.configSpinnerArray = jsonObject.get("CLASSES") as ArrayList<String>
+    }
+
+    private fun logoutEvent() {
+
     }
 
 }

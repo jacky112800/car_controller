@@ -6,6 +6,7 @@ import android.os.Looper
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import clientAction
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONException
 import org.json.JSONObject
@@ -25,7 +26,9 @@ class MainActivity : AppCompatActivity() {
         var port_car = 65536
         var th: socket_client = socket_client()
         var doJsonCommand: jsonCommand = jsonCommand()
+        var doClientAction:clientAction = clientAction()
         var socketIsChecked = false
+        var configSpinnerArray = arrayListOf<String>()
     }
 
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        text_ent()
+        textEvent()
         if (socketIsChecked) {
             Toast.makeText(this, "登出中請稍候", Toast.LENGTH_SHORT).show()
             logout()
@@ -43,10 +46,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        MainActivity.th.pollJSONQueueToInputCMDString()
+//        MainActivity.th.pollJSONQueueToInputCMDString()
     }
 
-    fun text_ent() {
+    fun textEvent() {
         ip_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         PWD_input.inputType = EditorInfo.TYPE_CLASS_TEXT
         start_btn.setOnClickListener {
@@ -55,12 +58,12 @@ class MainActivity : AppCompatActivity() {
             } else {
                 PWD = PWD_input.text.toString()
                 try {
-                    val ip_list = ip_input.text.toString().split(":")
-                    ip = ip_list[0]
-                    port_car = ip_list[1].toInt()
+                    val ipList = ip_input.text.toString().split(":")
+                    ip = ipList[0]
+                    port_car = ipList[1].toInt()
                     println(ip + "\n" + port_car)
                     Thread.sleep(100)
-                    tojson()
+                    toJson()
                 } catch (e: Exception) {
                     Toast.makeText(this, "請檢查是否有輸入正確格式", Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
@@ -70,10 +73,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun tojson() {
+    private fun toJson() {
         try {
             var ctBoolean = true
-            var clientThread = thread(start = false) {
+            val clientThread = thread(start = false) {
                 println("1" + th.state)
                 if (th.state == Thread.State.RUNNABLE) {//偵測socket class狀態以免重複start
                     th.socketConnect()
@@ -82,20 +85,14 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            var clientThread_check = thread(start = false) {
+            val clientThreadCheck = thread(start = false) {
                 while (ctBoolean) {
-                    if (th.socketConnection && !socketIsChecked) {//連線成功時進入下一個頁面
+                    if (th.isConnection() && !socketIsChecked) {//連線成功時進入下一個頁面
                         ctBoolean = false
                         val intent = Intent(this, check::class.java)
                         startActivity(intent)//進入驗證頁面 check.kt
-                    }else if(!th.socketConnection){
-                        Looper.prepare()
-                        ctBoolean = false
-                        Toast.makeText(this, "連線失敗，請檢查主機是否異常。", Toast.LENGTH_SHORT)
-                            .show()
-                        restartApp()
-                        Looper.loop()
                     }
+
                     if (th.state == Thread.State.TERMINATED) {//避免重複start class當狀態為終止時重啟app
                         Looper.prepare()
                         ctBoolean = false
@@ -108,9 +105,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             clientThread.start()
-            clientThread_check.start()
+            clientThreadCheck.start()
             clientThread.join()
-            clientThread_check.join()
+            clientThreadCheck.join()
+
 
         } catch (e: ConnectException) {
             Looper.prepare()
@@ -127,21 +125,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun restartApp() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-        android.os.Process.killProcess(android.os.Process.myPid())
+    private fun restartApp() {
+//        val intent = Intent(this, MainActivity::class.java)
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//        startActivity(intent)
+//        android.os.Process.killProcess(android.os.Process.myPid())
     }
 
 
     private fun logout() {
-//        val catchLogoutMessage = thread(start = false) { revByteArrayToString() }
         val checkSeverLogoutThread = thread(start = false) { checkServerLogout() }
         doJsonCommand.logoutJSON()
         checkSeverLogoutThread.start()
         Thread.sleep(100)
-        checkSeverLogoutThread.join()
         Thread.sleep(100)
     }
 
@@ -168,31 +164,4 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-//    private fun sendJsonToByteArray(jsonObject: JSONObject) {
-//        var strTobyte = thread(start = false) {
-//            socket_client.outputQueue.offer(jsonObject.toString(), 1000, timeU)
-//        }
-//        strTobyte.start()
-//    }
-
-//    private fun revByteArrayToString() {
-//        val catchTimer = Timer("recvByteArrayToString").schedule(0, 10) {
-//            if (!socket_client.inputQueue.isNullOrEmpty()) {
-//                val inputJSONObject = socket_client.inputQueue.poll(1000, timeU)
-//                if (inputJSONObject != null) {
-//                    inputString = inputJSONObject.toString()
-//                    println("catch:$inputString")
-//                }
-//            }
-//            if (!socketIsChecked) {
-//                cancel()
-//            }
-//        }
-//        catchTimer.run()
-//    }
-
-
 }
-
-

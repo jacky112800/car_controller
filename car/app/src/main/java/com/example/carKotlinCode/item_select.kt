@@ -25,14 +25,11 @@ class item_select : AppCompatActivity() {
         setContentView(R.layout.activity_item_select)
         itemSpinner = findViewById<Spinner>(R.id.item_select_spinner)
         selectSendButton = findViewById<Button>(R.id.btn_select_confirm)
-//        val getItemConfigJSONObject = JSONObject()
 
         val viewItemInfo = thread(start = false) { spinnerChange() }
         viewItemInfo.start()
         itemSelectSwitch()
-//        getItemConfigJSONObject.put("CMD", "GET_CONFIGS")
-//        sendJsonToByteArray(getItemConfigJSONObject)
-        viewItemInfo.join()
+
     }
 
     override fun onStart() {
@@ -52,7 +49,6 @@ class item_select : AppCompatActivity() {
 
     var stringArray = arrayListOf<String>("")
     fun itemConfigSend() {
-        var configJSONObject = JSONObject()
         var spinnerSelectString = ""
         itemSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
@@ -90,8 +86,7 @@ class item_select : AppCompatActivity() {
                 val inputJsonObject = JSONObject(inputString)
                 val configInfo = inputJsonObject.getString("CMD")
                 if (configInfo == "CONFIGS") {
-                    val configStringArray = inputJsonObject.getString("CONFIGS")
-                    stringArray = configStringArray.split(",") as ArrayList<String>
+                    stringArray = MainActivity.configSpinnerArray
                     val itemAdapter = ArrayAdapter(
                         this@item_select,
                         android.R.layout.simple_spinner_item,
