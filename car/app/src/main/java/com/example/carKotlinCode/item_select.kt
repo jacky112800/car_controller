@@ -1,17 +1,16 @@
 package com.example.carKotlinCode
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_item_select.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
-import kotlin.concurrent.schedule
-import kotlin.concurrent.thread
+
 
 class item_select : AppCompatActivity() {
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
@@ -26,14 +25,15 @@ class item_select : AppCompatActivity() {
         itemSpinner = findViewById<Spinner>(R.id.item_select_spinner)
         selectSendButton = findViewById<Button>(R.id.btn_select_confirm)
 
-        val viewItemInfo = thread(start = false) { spinnerChange() }
-        viewItemInfo.start()
+//        val viewItemInfo = thread(start = false) { spinnerChange() }
+//        viewItemInfo.start()
         itemSelectSwitch()
 
     }
 
     override fun onStart() {
         super.onStart()
+        spinnerChange(itemSpinner)
         itemConfigSend()
     }
 
@@ -46,8 +46,38 @@ class item_select : AppCompatActivity() {
         }
     }
 
-
     var stringArray = arrayListOf<String>("")
+
+    fun testSpinner(spinner: Spinner) {
+        val lunch = arrayOf("one", "two", "three", "four", "five")
+        val lunchArray = arrayListOf<String>()
+
+        val lunchJSONObject=JSONObject()
+
+        val lunchJSONArray=JSONArray()
+        lunchJSONArray.put("one")
+        lunchJSONArray.put("two")
+        lunchJSONArray.put("three")
+
+        lunchJSONObject.put("CLASSES",lunchJSONArray)
+        println(lunchJSONObject.toString())
+
+        val getJSONArray=lunchJSONObject.getJSONArray("CLASSES")
+
+        for (i in 0 until getJSONArray.length()){
+            val arrayString=getJSONArray.getString(i)
+            lunchArray.add(i,arrayString)
+        }
+
+        stringArray=lunchArray
+        val adapterTest = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            stringArray
+        )
+        spinner.adapter=adapterTest
+    }
+
     fun itemConfigSend() {
         var spinnerSelectString = ""
         itemSpinner?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -79,27 +109,23 @@ class item_select : AppCompatActivity() {
 
     }
 
-    fun spinnerChange() {
-        val spinnerChangeTimer = Timer("spinnerChange").schedule(0, 50) {
-            val inputString = socket_client.inputCmdString
-            if (inputString != "") {
-                val inputJsonObject = JSONObject(inputString)
-                val configInfo = inputJsonObject.getString("CMD")
-                if (configInfo == "CONFIGS") {
-                    stringArray = MainActivity.configSpinnerArray
-                    val itemAdapter = ArrayAdapter(
-                        this@item_select,
-                        android.R.layout.simple_spinner_item,
-                        stringArray
-                    )
-                    itemSpinner?.adapter = itemAdapter
-                }
-            }
-            if (!receiveCheck) {
-                cancel()
-            }
+    fun spinnerChange(spinner: Spinner?) {
+        val configJSONArray = arrayListOf<String>()
+
+        val getJSONArray=MainActivity.doClientAction.getConfigJSONArrayEvent()
+
+        for (i in 0 until getJSONArray.length()){
+            val arrayString=getJSONArray.getString(i)
+            configJSONArray.add(i,arrayString)
         }
-        spinnerChangeTimer.run()
+
+        stringArray=configJSONArray
+        val adapterTest = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            stringArray
+        )
+        spinner?.adapter=adapterTest
     }
 
     override fun onDestroy() {

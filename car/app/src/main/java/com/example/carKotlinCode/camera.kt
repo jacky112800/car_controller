@@ -1,8 +1,7 @@
 package com.example.carKotlinCode
 
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
+import android.graphics.*
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -37,7 +36,7 @@ class camera : AppCompatActivity() {
         super.onStart()
         val joystick = findViewById<JoystickView>(R.id.joystickView_car)
         val joystickThread = thread(start = false) { joystickListen(joystick) }
-        val drawThread = thread(start = false) { draw_json() }
+        val drawThread = thread(start = false) { drawJson() }
         receiveCheck = true
         MainActivity.th.pollFrameQueueToInputCMDString()
         joystickThread.start()
@@ -54,7 +53,7 @@ class camera : AppCompatActivity() {
     fun joystickListen(joystick: JoystickView) {
         Timer("delaySendMove", false).schedule(200) {
             joystick.setOnMoveListener { angle, strength ->
-                val strengthCarRun = (strength / 100).toFloat()
+                val strengthCarRun:Float = (strength.toFloat() / 100)
 
                 MainActivity.doJsonCommand.movJSON(strengthCarRun, angle)
                 if (angle == 0 && strength == 0) {
@@ -71,7 +70,7 @@ class camera : AppCompatActivity() {
         startActivity(intentSetting)
     }
 
-    fun draw_json() {
+    fun drawJson() {
         val imgViewCar = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
             //將全域變數的圖像資料取用
@@ -86,8 +85,16 @@ class camera : AppCompatActivity() {
                         val imgBase64 = frameObject.getString("IMAGE")
                         val jpgData = Base64.getDecoder().decode(imgBase64)
                         val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
+                        val copyBitmap=bitmap.copy(Bitmap.Config.ARGB_8888,true)
+
+                        val canvas = Canvas(copyBitmap)
+                        val paintTest= Paint()
+                        paintTest.strokeWidth = 2f
+                        paintTest.color = Color.RED
+                        paintTest.style = Paint.Style.STROKE
+                        canvas.drawRect(100f, 100f, 400f, 400f,paintTest)
+
 //                        if(frameObject.has("BBOX")){
-//                            var canvas =Canvas(bitmap)
 //                            val bboxArray=frameObject.get("BBOX") as Array<IntArray>
 //                            val intBboxArray=Array(bboxArray.size){IntArray(bboxArray.size*5)}
 //                            for(rowIndex in bboxArray.indices) {
@@ -100,8 +107,8 @@ class camera : AppCompatActivity() {
 //                        }
                         //如果bitmap不為空就顯示圖片
                         //由於bitmap為空會產生錯誤,所以必須要有這一步驟
-                        if (bitmap != null) {
-                            runOnUiThread { imgViewCar.setImageBitmap(bitmap) }
+                        if (copyBitmap != null) {
+                            runOnUiThread { imgViewCar.setImageBitmap(copyBitmap) }
                         }
                     }
                 }

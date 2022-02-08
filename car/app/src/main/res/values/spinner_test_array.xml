@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="test_array">
+        <item>測試第1項</item>
+        <item>測試第2項</item>
+        <item>測試第3項</item>
+        <item>測試第4項</item>
+        <item>測試第5項</item>
+        <item>測試第6項</item>
+        <item>測試第7項</item>
+        <item>測試第8項</item>
+    </string-array>
+</resources>

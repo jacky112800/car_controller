@@ -31,13 +31,14 @@ class check : AppCompatActivity() {
             override fun timeOutFunction() {
                 //TODO: overwrite this
                 try {
+                    MainActivity.doJsonCommand.loginJSON()
+                    Thread.sleep(1000)
                     when (MainActivity.doClientAction.verify()) {
                         true -> {
                             nextActivity()
                         }
                         false -> goBack()
                     }
-                    Thread.sleep(1000)
                 } catch (e: InterruptedException) {
                     e.printStackTrace()
                 }

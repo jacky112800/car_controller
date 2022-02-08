@@ -1,5 +1,6 @@
 import com.example.carKotlinCode.MainActivity
 import com.example.carKotlinCode.socket_client
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -11,11 +12,11 @@ class clientAction : Thread() {
 
     //    private val clientSocket = socket_client()
     private var timeU: TimeUnit = TimeUnit.MILLISECONDS
+    private var configJSONArray:JSONArray= JSONArray()
+
 
     fun verify(): Boolean {
         try {
-            MainActivity.doJsonCommand.loginJSON()
-            sleep(1000)
             return if (!socket_client.inputQueue.isNullOrEmpty()) {
                 val loginInfo = socket_client.inputQueue.poll(1000, timeU)
                 when (loginInfo.getBoolean("VERIFY")) {
@@ -74,11 +75,15 @@ class clientAction : Thread() {
     }
 
     private fun configsEvent(jsonObject: JSONObject) {
-        MainActivity.configSpinnerArray = jsonObject.get("CLASSES") as ArrayList<String>
+        configJSONArray = jsonObject.getJSONArray("CLASSES")
     }
 
     private fun logoutEvent() {
 
+    }
+
+    fun getConfigJSONArrayEvent(): JSONArray {
+        return configJSONArray
     }
 
 }

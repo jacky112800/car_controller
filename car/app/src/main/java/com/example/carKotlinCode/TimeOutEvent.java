@@ -6,18 +6,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class TimeOutEvent extends Thread {
-    Lock lock = new ReentrantLock();
-    Condition condition = lock.newCondition();
+    private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
 
     abstract void timeOutFunction();
 
     @Override
     public void run() {
-        timeOutFunction();
-        disable_wait();
+        this.timeOutFunction();
+        this.disableWait();
     }
 
-    private void disable_wait() {
+    private void disableWait() {
         try {
             this.lock.lock();
             this.condition.signalAll();
