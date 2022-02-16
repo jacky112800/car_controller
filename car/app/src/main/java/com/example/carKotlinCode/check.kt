@@ -17,11 +17,11 @@ class check : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_check)
-        Thread.sleep(1000)
     }
 
     override fun onStart() {
         super.onStart()
+        Thread.sleep(100)
 //        checkInfo()
         testCheck()
     }
@@ -32,7 +32,6 @@ class check : AppCompatActivity() {
                 //TODO: overwrite this
                 try {
                     MainActivity.doJsonCommand.loginJSON()
-                    Thread.sleep(1000)
                     when (MainActivity.doClientAction.verify()) {
                         true -> {
                             nextActivity()
@@ -45,7 +44,7 @@ class check : AppCompatActivity() {
             }
         }
         timeOutEvent.start()
-        println(timeOutEvent.wait(5000, TimeUnit.MILLISECONDS))
+        println(timeOutEvent.wait(3000, TimeUnit.MILLISECONDS))
         try {
             timeOutEvent.join()
         } catch (e: InterruptedException) {

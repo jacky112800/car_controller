@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import io.github.controlwear.virtual.joystick.android.JoystickView
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
@@ -24,7 +25,6 @@ class camera : AppCompatActivity() {
     var itemTextView: TextView? = null
 
     var receiveCheck = false
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class camera : AppCompatActivity() {
     fun joystickListen(joystick: JoystickView) {
         Timer("delaySendMove", false).schedule(200) {
             joystick.setOnMoveListener { angle, strength ->
-                val strengthCarRun:Float = (strength.toFloat() / 100)
+                val strengthCarRun: Float = (strength.toFloat() / 100)
 
                 MainActivity.doJsonCommand.movJSON(strengthCarRun, angle)
                 if (angle == 0 && strength == 0) {
@@ -85,26 +85,27 @@ class camera : AppCompatActivity() {
                         val imgBase64 = frameObject.getString("IMAGE")
                         val jpgData = Base64.getDecoder().decode(imgBase64)
                         val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
-                        val copyBitmap=bitmap.copy(Bitmap.Config.ARGB_8888,true)
+                        val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-                        val canvas = Canvas(copyBitmap)
-                        val paintTest= Paint()
-                        paintTest.strokeWidth = 2f
-                        paintTest.color = Color.RED
-                        paintTest.style = Paint.Style.STROKE
-                        canvas.drawRect(100f, 100f, 400f, 400f,paintTest)
+                        if (frameObject.has("bbox")){
+                            val getBBoxJSONArray = frameObject.getJSONArray("bbox")
+                            val bBoxArray = Array(getBBoxJSONArray.length()) {FloatArray(4) }
+                            val canvas = Canvas(copyBitmap)
+                            val paintTest = Paint()
+                            paintTest.strokeWidth = 2f
+                            paintTest.color = Color.RED
+                            paintTest.style = Paint.Style.STROKE
+                            if (getBBoxJSONArray.length()>0){
+                                for (i in 0 until getBBoxJSONArray.length()) {
+                                    val getJSONArray: JSONArray = getBBoxJSONArray.getJSONArray(i)
+                                    for (j in 0 until getJSONArray.length()-1) {
+                                        bBoxArray[i][j] = getJSONArray.getInt(j).toFloat()
+                                    }
+                                    canvas.drawRect(bBoxArray[i][0], bBoxArray[i][1], bBoxArray[i][2]-bBoxArray[i][0], bBoxArray[i][3]-bBoxArray[i][1], paintTest)
+                                }
+                            }
+                        }
 
-//                        if(frameObject.has("BBOX")){
-//                            val bboxArray=frameObject.get("BBOX") as Array<IntArray>
-//                            val intBboxArray=Array(bboxArray.size){IntArray(bboxArray.size*5)}
-//                            for(rowIndex in bboxArray.indices) {
-//                                for(colIndex in 0 until 5) {
-//                                    if(colIndex == rowIndex) {
-//                                        intBboxArray[rowIndex][colIndex]=bboxArray[rowIndex][colIndex]
-//                                    }
-//                                }
-//                            }
-//                        }
                         //如果bitmap不為空就顯示圖片
                         //由於bitmap為空會產生錯誤,所以必須要有這一步驟
                         if (copyBitmap != null) {

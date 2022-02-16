@@ -4,6 +4,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 class clientAction : Thread() {
     companion object {
@@ -17,6 +18,7 @@ class clientAction : Thread() {
 
     fun verify(): Boolean {
         try {
+            sleep(100)
             return if (!socket_client.inputQueue.isNullOrEmpty()) {
                 val loginInfo = socket_client.inputQueue.poll(1000, timeU)
                 when (loginInfo.getBoolean("VERIFY")) {

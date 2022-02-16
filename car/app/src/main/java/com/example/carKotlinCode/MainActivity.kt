@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             val clientThreadCheck = thread(start = false) {
+                var count=0
                 while (ctBoolean) {
                     if (th.isConnection() && !socketIsChecked) {//連線成功時進入下一個頁面
                         ctBoolean = false
@@ -101,13 +102,17 @@ class MainActivity : AppCompatActivity() {
                         restartApp()
                         Looper.loop()
                     }
+                    if (count>=5){
+                        ctBoolean=false
+                    }else{
+                        count++
+                    }
+                    Thread.sleep(250)
                 }
             }
 
             clientThread.start()
             clientThreadCheck.start()
-            clientThread.join()
-            clientThreadCheck.join()
 
 
         } catch (e: ConnectException) {
@@ -126,10 +131,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restartApp() {
-//        val intent = Intent(this, MainActivity::class.java)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//        startActivity(intent)
-//        android.os.Process.killProcess(android.os.Process.myPid())
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        android.os.Process.killProcess(android.os.Process.myPid())
     }
 
 
