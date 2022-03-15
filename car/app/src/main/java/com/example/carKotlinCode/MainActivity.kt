@@ -3,6 +3,7 @@ package com.example.carKotlinCode
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
+import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         var port_car = 65536
         var th: socket_client = socket_client()
         var doJsonCommand: jsonCommand = jsonCommand()
-        var doClientAction:clientAction = clientAction()
+        var doClientAction: clientAction = clientAction()
         var socketIsChecked = false
         var configSpinnerArray = arrayListOf<String>()
     }
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             val clientThreadCheck = thread(start = false) {
-                var count=0
+                var count = 0
                 while (ctBoolean) {
                     if (th.isConnection() && !socketIsChecked) {//連線成功時進入下一個頁面
                         ctBoolean = false
@@ -102,9 +103,9 @@ class MainActivity : AppCompatActivity() {
                         restartApp()
                         Looper.loop()
                     }
-                    if (count>=5){
-                        ctBoolean=false
-                    }else{
+                    if (count >= 5) {
+                        ctBoolean = false
+                    } else {
                         count++
                     }
                     Thread.sleep(250)
@@ -169,4 +170,13 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
 }

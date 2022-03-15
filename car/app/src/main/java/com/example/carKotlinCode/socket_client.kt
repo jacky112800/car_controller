@@ -111,6 +111,7 @@ class socket_client : Thread() {
         var inputStringJSON = outputStream.toByteArray().decodeToString()
         if (inputStringJSON.toString() == "-1") {
             println("close")
+            throw EOFException()
         }
         val inputStringJSONObject = JSONObject(inputStringJSON)
 

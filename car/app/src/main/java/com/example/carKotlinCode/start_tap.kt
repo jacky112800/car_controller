@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
+import kotlin.system.exitProcess
 
 class start_tap : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,7 @@ class start_tap : AppCompatActivity() {
             if (MainActivity.socketIsChecked) {
                 val backToStartActivity = Intent(this, MainActivity::class.java)
                 startActivity(backToStartActivity)
+                System.exit(0)
             }
             return true
         }

@@ -119,7 +119,26 @@ class item_select : AppCompatActivity() {
             configJSONArray.add(i,arrayString)
         }
 
-        stringArray=configJSONArray
+        if (configJSONArray.isNullOrEmpty()){
+            val sampleArray = arrayListOf<String>()
+            val sampleJSONObject=JSONObject()
+            val sampleJSONArray=JSONArray()
+            sampleJSONArray.put("one")
+            sampleJSONObject.put("CLASSES",sampleJSONArray)
+            println(sampleJSONObject.toString())
+
+            val getJSONArrayNull=sampleJSONObject.getJSONArray("CLASSES")
+
+            for (i in 0 until getJSONArrayNull.length()){
+                val arrayString=getJSONArrayNull.getString(i)
+                sampleArray.add(i,arrayString)
+            }
+
+            stringArray=sampleArray
+        }
+        else{
+            stringArray=configJSONArray
+        }
         val adapterTest = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_dropdown_item,
