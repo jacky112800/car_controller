@@ -72,7 +72,7 @@ class jsonCommand : Thread() {
         sendJsonToByteArray(setInferJSONObject)
     }
 
-    fun setQualityJSON(width: String, height: String) {
+    fun setQualityJSON(width: Int, height: Int) {
         val qualityJSONObject = JSONObject()
         qualityJSONObject.put("CMD", "SET_QUALITY")
         qualityJSONObject.put("WIDTH", width)

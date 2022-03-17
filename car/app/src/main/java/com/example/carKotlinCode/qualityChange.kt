@@ -9,8 +9,8 @@ import kotlinx.android.synthetic.main.activity_infer_change.*
 import java.util.concurrent.TimeUnit
 
 class qualityChange : AppCompatActivity() {
-    var qualityWidth = ""
-    var qualityHeight = ""
+    var qualityWidth = 0
+    var qualityHeight = 0
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,8 +24,8 @@ class qualityChange : AppCompatActivity() {
             if (infer_h_text.text.isNullOrEmpty() && infer_w_text.text.isNullOrEmpty()) {
                 Toast.makeText(this, "請勿輸入空白", Toast.LENGTH_SHORT).show()
             } else {
-                qualityWidth = infer_w_text.text.toString()
-                qualityHeight = infer_h_text.text.toString()
+                qualityWidth = infer_w_text.text.toString().toInt()
+                qualityHeight = infer_h_text.text.toString().toInt()
                 MainActivity.doJsonCommand.setQualityJSON(qualityWidth, qualityHeight)
             }
         }
