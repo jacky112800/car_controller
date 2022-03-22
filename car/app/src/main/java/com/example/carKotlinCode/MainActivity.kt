@@ -115,8 +115,7 @@ class MainActivity : AppCompatActivity() {
 
             clientThread.start()
             clientThreadCheck.start()
-
-
+            
         } catch (e: ConnectException) {
             Looper.prepare()
             Toast.makeText(this, "請檢查主機是否異常", Toast.LENGTH_SHORT).show()
