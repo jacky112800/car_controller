@@ -48,6 +48,7 @@ class socket_client : Thread() {
             val inetSocketAddress = InetSocketAddress(MainActivity.ip, MainActivity.port_car)
             socket.connect(inetSocketAddress)
             sleep(100)
+
             println("Socket start")
             active()
         } catch (e: ConnectException) {

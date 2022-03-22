@@ -83,7 +83,7 @@ class jsonCommand : Thread() {
     fun movJSON(strength: Float, angle: Int) {
         val moveJSONObject = JSONObject()
         moveJSONObject.put("CMD", "MOV")
-        moveJSONObject.put("THETA ", angle)
+        moveJSONObject.put("THETA", angle)
         moveJSONObject.put("R", strength)
         sendJsonToByteArray(moveJSONObject)
     }

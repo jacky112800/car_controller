@@ -77,7 +77,7 @@ class clientAction : Thread() {
     }
 
     private fun configsEvent(jsonObject: JSONObject) {
-        configJSONArray = jsonObject.getJSONArray("CLASSES")
+//        configJSONArray = jsonObject.getJSONArray("CLASSES")
     }
 
     private fun logoutEvent() {

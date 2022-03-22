@@ -82,35 +82,45 @@ class camera : AppCompatActivity() {
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
                     if (frameObject.getString("CMD") == "FRAME") {
-                        val imgBase64 = frameObject.getString("IMAGE")
-                        val jpgData = Base64.getDecoder().decode(imgBase64)
-                        val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
-                        val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+                        if(!frameObject.getString("IMAGE").isNullOrEmpty()&&frameObject.getString("IMAGE")!=""){
+                            val imgBase64 = frameObject.getString("IMAGE")
+                            val jpgData = Base64.getDecoder().decode(imgBase64)
+                            val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
+                            val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-                        if (frameObject.has("bbox")){
-                            val getBBoxJSONArray = frameObject.getJSONArray("bbox")
-                            val bBoxArray = Array(getBBoxJSONArray.length()) {FloatArray(4) }
-                            val canvas = Canvas(copyBitmap)
-                            val paintTest = Paint()
-                            paintTest.strokeWidth = 2f
-                            paintTest.color = Color.RED
-                            paintTest.style = Paint.Style.STROKE
-                            if (getBBoxJSONArray.length()>0){
-                                for (i in 0 until getBBoxJSONArray.length()) {
-                                    val getJSONArray: JSONArray = getBBoxJSONArray.getJSONArray(i)
-                                    for (j in 0 until getJSONArray.length()-1) {
-                                        bBoxArray[i][j] = getJSONArray.getInt(j).toFloat()
+                            if (frameObject.getJSONArray("BBOX").length()!=0) {
+                                val getBBoxJSONArray = frameObject.getJSONArray("BBOX")
+                                val bBoxArray = Array(getBBoxJSONArray.length()) { FloatArray(4) }
+                                val canvas = Canvas(copyBitmap)
+                                val paintTest = Paint()
+                                paintTest.strokeWidth = 2f
+                                paintTest.color = Color.RED
+                                paintTest.style = Paint.Style.STROKE
+                                if (getBBoxJSONArray.length() > 0) {
+                                    for (i in 0 until getBBoxJSONArray.length()) {
+                                        val getJSONArray: JSONArray =
+                                            getBBoxJSONArray.getJSONArray(i)
+                                        for (j in 0 until getJSONArray.length() - 1) {
+                                            bBoxArray[i][j] = getJSONArray.getInt(j).toFloat()
+                                        }
+                                        canvas.drawRect(
+                                            bBoxArray[i][0],
+                                            bBoxArray[i][1],
+                                            bBoxArray[i][2] - bBoxArray[i][0],
+                                            bBoxArray[i][3] - bBoxArray[i][1],
+                                            paintTest
+                                        )
                                     }
-                                    canvas.drawRect(bBoxArray[i][0], bBoxArray[i][1], bBoxArray[i][2]-bBoxArray[i][0], bBoxArray[i][3]-bBoxArray[i][1], paintTest)
                                 }
+                            }
+
+                            //如果bitmap不為空就顯示圖片
+                            //由於bitmap為空會產生錯誤,所以必須要有這一步驟
+                            if (copyBitmap != null) {
+                                runOnUiThread { imgViewCar.setImageBitmap(copyBitmap) }
                             }
                         }
 
-                        //如果bitmap不為空就顯示圖片
-                        //由於bitmap為空會產生錯誤,所以必須要有這一步驟
-                        if (copyBitmap != null) {
-                            runOnUiThread { imgViewCar.setImageBitmap(copyBitmap) }
-                        }
                     }
                 }
                 if (!receiveCheck) {

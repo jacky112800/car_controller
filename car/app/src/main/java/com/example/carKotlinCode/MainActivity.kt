@@ -105,10 +105,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     if (count >= 5) {
                         ctBoolean = false
+                        restartApp()
                     } else {
                         count++
                     }
-                    Thread.sleep(250)
+                    Thread.sleep(1000)
                 }
             }
 
