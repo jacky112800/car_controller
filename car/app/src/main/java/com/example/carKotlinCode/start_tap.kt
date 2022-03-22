@@ -28,6 +28,8 @@ class start_tap : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (MainActivity.socketIsChecked) {
+                MainActivity.doJsonCommand.logoutJSON()
+                Thread.sleep(1000)
                 val backToStartActivity = Intent(this, MainActivity::class.java)
                 startActivity(backToStartActivity)
                 System.exit(0)
