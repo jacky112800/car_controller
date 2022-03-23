@@ -19,7 +19,6 @@ class socket_client : Thread() {
         val outputQueue = LinkedBlockingQueue<String>()
         val frameBufferQueue = LinkedBlockingQueue<JSONObject>()
         var inputCmdString = ""
-        var inputFrameString = ""
         var configString = ""
     }
 

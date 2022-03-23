@@ -24,7 +24,7 @@ import kotlin.concurrent.thread
 class camera : AppCompatActivity() {
 
     var itemTextView: TextView? = null
-
+    var inputFrameString = ""
     var receiveCheck = false
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
@@ -75,8 +75,8 @@ class camera : AppCompatActivity() {
         val imgViewCar = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
             //將全域變數的圖像資料取用
-            while (receiveCheck) {
-                val frameString = socket_client.inputFrameString
+            while (true) {
+                val frameString = inputFrameString
                 if (frameString != "") {
                     val frameObject = JSONObject(frameString)
                     //如果CMD標籤內的字串為FRAME時
@@ -130,21 +130,32 @@ class camera : AppCompatActivity() {
             }
         } catch (e: JSONException) {
             e.printStackTrace()
+        } catch (e:IllegalArgumentException){
+            e.printStackTrace()
+            println(inputFrameString)
         }
     }
 
     fun pollFrameQueueToInputCMDString() {
         val pollFrameQueue = thread(start = false) {
             socket_client.frameBufferQueue.clear()
-            while(true){
+            var clearQueueCount = 0
+            while (true) {
+
                 if (!socket_client.frameBufferQueue.isEmpty()) {
                     val inputJSONObject = socket_client.frameBufferQueue.poll()
                     if (inputJSONObject != null) {
-                        socket_client.inputFrameString = inputJSONObject.toString()
-                        println("catch:${socket_client.inputFrameString}")
+                        inputFrameString = inputJSONObject.toString()
+                        println("catch:${inputFrameString}")
                     }
                 }
                 Thread.sleep(1)
+                if (clearQueueCount > 34) {
+                    socket_client.frameBufferQueue.clear()
+                    clearQueueCount=0
+                } else {
+                    clearQueueCount++
+                }
             }
         }
         pollFrameQueue.start()
