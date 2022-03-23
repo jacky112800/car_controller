@@ -75,7 +75,7 @@ class camera : AppCompatActivity() {
         val imgViewCar = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
             //將全域變數的圖像資料取用
-            val drawTimer = Timer("draw").schedule(0, 16) {
+            while (receiveCheck) {
                 val frameString = socket_client.inputFrameString
                 if (frameString != "") {
                     val frameObject = JSONObject(frameString)
@@ -126,11 +126,8 @@ class camera : AppCompatActivity() {
 
                     }
                 }
-                if (!receiveCheck) {
-                    cancel()
-                }
+                Thread.sleep(10)
             }
-            drawTimer.run()
         } catch (e: JSONException) {
             e.printStackTrace()
         }

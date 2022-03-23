@@ -54,7 +54,7 @@ class clientAction : Thread() {
                 val jsonObject = socket_client.inputQueue.poll(1000, timeU)
                 event(jsonObject)
             }
-            sleep(10)
+            sleep(1)
         }
     }
 
