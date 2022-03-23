@@ -184,24 +184,24 @@ class socket_client : Thread() {
         pollCmdQueue.start()
     }
 
-    fun pollFrameQueueToInputCMDString() {
-        val pollFrameQueue = thread(start = false) {
-            val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
-                if (!frameBufferQueue.isNullOrEmpty()) {
-                    val inputJSONObject = frameBufferQueue.poll(1000, timeU)
-                    if (inputJSONObject != null) {
-                        inputFrameString = inputJSONObject.toString()
-                        println("catch:$inputFrameString")
-                    }
-                }
-                if (!isConnection()) {
-                    cancel()
-                }
-            }
-            catchTimer.run()
-        }
-        pollFrameQueue.start()
-    }
+//    fun pollFrameQueueToInputCMDString() {
+//        val pollFrameQueue = thread(start = false) {
+//            val catchTimer = Timer("getJSONQueueToString").schedule(0, 10) {
+//                if (!frameBufferQueue.isNullOrEmpty()) {
+//                    val inputJSONObject = frameBufferQueue.poll(1000, timeU)
+//                    if (inputJSONObject != null) {
+//                        inputFrameString = inputJSONObject.toString()
+//                        println("catch:$inputFrameString")
+//                    }
+//                }
+//                if (!isConnection()) {
+//                    cancel()
+//                }
+//            }
+//            catchTimer.run()
+//        }
+//        pollFrameQueue.start()
+//    }
 
 
 }

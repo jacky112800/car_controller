@@ -14,6 +14,7 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.schedule
 import kotlin.concurrent.thread
 
@@ -25,7 +26,7 @@ class camera : AppCompatActivity() {
     var itemTextView: TextView? = null
 
     var receiveCheck = false
-
+    var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +39,7 @@ class camera : AppCompatActivity() {
         val joystickThread = thread(start = false) { joystickListen(joystick) }
         val drawThread = thread(start = false) { drawJson() }
         receiveCheck = true
-        MainActivity.th.pollFrameQueueToInputCMDString()
+        pollFrameQueueToInputCMDString()
         joystickThread.start()
         drawThread.start()
         MainActivity.doJsonCommand.setStreamJSON(true)
@@ -74,7 +75,7 @@ class camera : AppCompatActivity() {
         val imgViewCar = findViewById<ImageView>(R.id.img_view_car_to_iphone)
         try {
             //將全域變數的圖像資料取用
-            val drawTimer = Timer("draw").schedule(0, 30) {
+            val drawTimer = Timer("draw").schedule(0, 16) {
                 val frameString = socket_client.inputFrameString
                 if (frameString != "") {
                     val frameObject = JSONObject(frameString)
@@ -82,13 +83,15 @@ class camera : AppCompatActivity() {
                     //將IMAGE內的圖像資料先Base64解碼
                     //再以裡面的圖像資料做成bitmap
                     if (frameObject.getString("CMD") == "FRAME") {
-                        if(!frameObject.getString("IMAGE").isNullOrEmpty()&&frameObject.getString("IMAGE")!=""){
+                        if (!frameObject.getString("IMAGE")
+                                .isNullOrEmpty() && frameObject.getString("IMAGE") != ""
+                        ) {
                             val imgBase64 = frameObject.getString("IMAGE")
                             val jpgData = Base64.getDecoder().decode(imgBase64)
                             val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
                             val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-                            if (frameObject.getJSONArray("BBOX").length()!=0) {
+                            if (frameObject.getJSONArray("BBOX").length() != 0) {
                                 val getBBoxJSONArray = frameObject.getJSONArray("BBOX")
                                 val bBoxArray = Array(getBBoxJSONArray.length()) { FloatArray(4) }
                                 val canvas = Canvas(copyBitmap)
@@ -131,6 +134,23 @@ class camera : AppCompatActivity() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
+    }
+
+    fun pollFrameQueueToInputCMDString() {
+        val pollFrameQueue = thread(start = false) {
+            socket_client.frameBufferQueue.clear()
+            while(true){
+                if (!socket_client.frameBufferQueue.isEmpty()) {
+                    val inputJSONObject = socket_client.frameBufferQueue.poll()
+                    if (inputJSONObject != null) {
+                        socket_client.inputFrameString = inputJSONObject.toString()
+                        println("catch:${socket_client.inputFrameString}")
+                    }
+                }
+                Thread.sleep(1)
+            }
+        }
+        pollFrameQueue.start()
     }
 
     override fun onPause() {
