@@ -13,10 +13,10 @@ import java.util.concurrent.TimeUnit
 
 
 class item_select : AppCompatActivity() {
-    var timeU: TimeUnit = TimeUnit.MILLISECONDS
     var receiveCheck = true
     var itemSpinner: Spinner? = null
     var selectSendButton: Button? = null
+    var selectClassesString=""
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,8 +25,6 @@ class item_select : AppCompatActivity() {
         itemSpinner = findViewById<Spinner>(R.id.item_select_spinner)
         selectSendButton = findViewById<Button>(R.id.btn_select_confirm)
 
-//        val viewItemInfo = thread(start = false) { spinnerChange() }
-//        viewItemInfo.start()
         itemSelectSwitch()
 
     }
@@ -35,6 +33,7 @@ class item_select : AppCompatActivity() {
         super.onStart()
         spinnerChange(itemSpinner)
         itemConfigSend()
+        showClasses()
     }
 
     private fun itemSelectSwitch() {
@@ -93,10 +92,12 @@ class item_select : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
                 spinnerSelectString = stringArray[position]
+                selectClassesString=spinnerSelectString
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 spinnerSelectString = ""
+                selectClassesString=spinnerSelectString
             }
         }
         selectSendButton?.setOnClickListener {
@@ -106,7 +107,6 @@ class item_select : AppCompatActivity() {
                 Toast.makeText(this, "尚未選擇物件", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     fun spinnerChange(spinner: Spinner?) {
@@ -123,11 +123,11 @@ class item_select : AppCompatActivity() {
             val sampleArray = arrayListOf<String>()
             val sampleJSONObject=JSONObject()
             val sampleJSONArray=JSONArray()
-            sampleJSONArray.put("one")
-            sampleJSONObject.put("CLASSES",sampleJSONArray)
+            sampleJSONArray.put("沒有接收到可用選項")
+            sampleJSONObject.put("TEST",sampleJSONArray)
             println(sampleJSONObject.toString())
 
-            val getJSONArrayNull=sampleJSONObject.getJSONArray("CLASSES")
+            val getJSONArrayNull=sampleJSONObject.getJSONArray("TEST")
 
             for (i in 0 until getJSONArrayNull.length()){
                 val arrayString=getJSONArrayNull.getString(i)
@@ -145,6 +145,20 @@ class item_select : AppCompatActivity() {
             stringArray
         )
         spinner?.adapter=adapterTest
+    }
+
+    fun showClasses(){
+        val getJSONObject=MainActivity.doClientAction.getConfigJSONObjectEvent()
+        btn_select_check.setOnClickListener{
+            if (getJSONObject.length()>0){
+                val modelJSONObject= getJSONObject.getJSONObject(selectClassesString)
+                val modelClassesJSONArray=modelJSONObject.getJSONArray("CLASSES")
+                Toast.makeText(this, "選擇物件:$modelClassesJSONArray", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(this, "尚未選擇", Toast.LENGTH_SHORT).show()
+            }
+
+        }
     }
 
     override fun onDestroy() {

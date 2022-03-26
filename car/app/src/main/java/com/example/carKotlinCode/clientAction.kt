@@ -1,10 +1,11 @@
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.carKotlinCode.MainActivity
 import com.example.carKotlinCode.socket_client
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.thread
 
 class clientAction : Thread() {
     companion object {
@@ -14,6 +15,7 @@ class clientAction : Thread() {
     //    private val clientSocket = socket_client()
     private var timeU: TimeUnit = TimeUnit.MILLISECONDS
     private var configJSONArray:JSONArray= JSONArray()
+    private var configJSONObject=JSONObject()
 
 
     fun verify(): Boolean {
@@ -77,7 +79,19 @@ class clientAction : Thread() {
     }
 
     private fun configsEvent(jsonObject: JSONObject) {
-//        configJSONArray = jsonObject.getJSONArray("CLASSES")
+        if(jsonObject.length()>0){
+            val getConfigJSONObject = jsonObject.getJSONObject("CONFIGS")
+            configJSONObject=getConfigJSONObject
+            var configKeyIterator= iterator<String> {  }
+            configKeyIterator=getConfigJSONObject.keys()
+            val getConfigsJSONArray=JSONArray()
+            while (configKeyIterator.hasNext()) {
+                val key: String = configKeyIterator.next()
+                getConfigsJSONArray.put(key)
+                println(getConfigsJSONArray)
+            }
+            configJSONArray= getConfigsJSONArray
+        }
     }
 
     private fun logoutEvent() {
@@ -86,6 +100,10 @@ class clientAction : Thread() {
 
     fun getConfigJSONArrayEvent(): JSONArray {
         return configJSONArray
+    }
+
+    fun getConfigJSONObjectEvent(): JSONObject {
+        return configJSONObject
     }
 
 }

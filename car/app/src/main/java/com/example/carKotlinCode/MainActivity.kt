@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import clientAction
 import kotlinx.android.synthetic.main.activity_main.*
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.ConnectException
@@ -29,10 +30,7 @@ class MainActivity : AppCompatActivity() {
         var doJsonCommand: jsonCommand = jsonCommand()
         var doClientAction: clientAction = clientAction()
         var socketIsChecked = false
-        var configSpinnerArray = arrayListOf<String>()
     }
-
-    var timeU: TimeUnit = TimeUnit.MILLISECONDS
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -173,10 +171,32 @@ class MainActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-
+//            println("press")
+//            jsonObjectTest()
             return true
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    fun jsonObjectTest(){
+        val testJSONObject=JSONObject()
+        val inTestJSONObject=JSONObject()
+        inTestJSONObject.put("in1",111)
+        inTestJSONObject.put("in2",222)
+        inTestJSONObject.put("in3",333)
+        testJSONObject.put("CMD","CMD")
+        testJSONObject.put("CONFIG",inTestJSONObject)
+        val aaa=testJSONObject.getJSONObject("CONFIG")
+        var iteratarTest= iterator<String> {  }
+        iteratarTest=aaa.keys()
+        println(aaa.toString())
+        val configsJSONArray=JSONArray()
+        while (iteratarTest.hasNext()) {
+            val key: String = iteratarTest.next()
+            configsJSONArray.put(key)
+            println(configsJSONArray)
+        }
+
     }
 
 }

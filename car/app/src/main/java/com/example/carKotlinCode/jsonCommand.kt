@@ -68,7 +68,7 @@ class jsonCommand : Thread() {
     fun setInferJSON(infer: Boolean) {
         val setInferJSONObject = JSONObject()
         setInferJSONObject.put("CMD", "SET_INFER")
-        setInferJSONObject.put("STREAM", infer)
+        setInferJSONObject.put("INFER", infer)
         sendJsonToByteArray(setInferJSONObject)
     }
 
