@@ -91,6 +91,15 @@ class camera : AppCompatActivity() {
                             val bitmap = BitmapFactory.decodeByteArray(jpgData, 0, jpgData.size)
                             val copyBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
+//                            val canvas = Canvas(copyBitmap)
+//                            val paintTest = Paint()
+//                            paintTest.strokeWidth = 2f
+//                            paintTest.color = Color.RED
+//                            paintTest.style = Paint.Style.STROKE
+//                            canvas.drawRect(145f, 167f, 277f, 231f, paintTest)
+//                            canvas.drawRect(212f, 47f, 425f, 428f, paintTest)
+//                            canvas.drawRect(0f, 0f, 62f, 92f, paintTest)
+
                             if (frameObject.getJSONArray("BBOX").length() != 0) {
                                 val getBBoxJSONArray = frameObject.getJSONArray("BBOX")
                                 val bBoxArray = Array(getBBoxJSONArray.length()) { FloatArray(4) }
@@ -109,8 +118,8 @@ class camera : AppCompatActivity() {
                                         canvas.drawRect(
                                             bBoxArray[i][0],
                                             bBoxArray[i][1],
-                                            bBoxArray[i][2] - bBoxArray[i][0],
-                                            bBoxArray[i][3] - bBoxArray[i][1],
+                                            bBoxArray[i][2],
+                                            bBoxArray[i][3],
                                             paintTest
                                         )
                                     }
