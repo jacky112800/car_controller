@@ -22,8 +22,8 @@ class check : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         Thread.sleep(100)
-//        checkInfo()
-        testCheck()
+        checkInfo()
+//        testCheck()
     }
 
     private fun checkInfo() {
