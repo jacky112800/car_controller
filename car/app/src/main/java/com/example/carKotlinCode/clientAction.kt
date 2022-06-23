@@ -23,20 +23,26 @@ class clientAction : Thread() {
             sleep(100)
             return if (!socket_client.inputQueue.isNullOrEmpty()) {
                 val loginInfo = socket_client.inputQueue.poll(1000, timeU)
-                when (loginInfo.getBoolean("VERIFY")) {
-                    true -> {
-                        println("驗證成功")
-                        true
+                if(loginInfo.getString("CMD")=="LOG_INFO"){
+                    when (loginInfo.getBoolean("VERIFY")) {
+                        true -> {
+                            println("驗證成功")
+                            true
+                        }
+                        false -> {
+                            println("驗證失敗")
+//                            MainActivity.th.closeSocket()
+                            false
+                        }
                     }
-                    false -> {
-                        println("驗證失敗")
-                        MainActivity.th.closeSocket()
-                        false
-                    }
+                }else{
+                    println("驗證失敗(null)")
+//                MainActivity.th.closeSocket()
+                    false
                 }
             }else{
                 println("驗證失敗(null)")
-                MainActivity.th.closeSocket()
+//                MainActivity.th.closeSocket()
                 false
             }
         } catch (e: IOException) {

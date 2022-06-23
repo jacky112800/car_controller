@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.73" />
+        app:layout_constraintVertical_bias="0.7" />
 
     <EditText
         android:id="@+id/PWD_input"
@@ -32,27 +32,29 @@
         android:hint="@string/account_tip"
         android:inputType="text"
         android:textColor="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/ip_input"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.564"
+        app:layout_constraintHorizontal_bias="0.536"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.906" />
+        app:layout_constraintTop_toBottomOf="@+id/ip_input"
+        app:layout_constraintVertical_bias="0.089" />
 
     <TextView
         android:id="@+id/account"
         android:layout_width="56dp"
         android:layout_height="25dp"
+        android:layout_marginStart="212dp"
+        android:layout_marginLeft="212dp"
         android:gravity="center"
         android:text="@string/account"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/PWD_input"
-        app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.871" />
+        app:layout_constraintVertical_bias="0.528" />
 
     <EditText
         android:id="@+id/ip_input"
@@ -66,31 +68,32 @@
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.564"
+        app:layout_constraintHorizontal_bias="0.536"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.538" />
+        app:layout_constraintVertical_bias="0.408" />
 
     <TextView
         android:id="@+id/password"
         android:layout_width="56dp"
         android:layout_height="24dp"
+        android:layout_marginStart="212dp"
+        android:layout_marginLeft="212dp"
         android:gravity="center"
         android:text="@string/password"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/ip_input"
-        app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.527" />
+        app:layout_constraintVertical_bias="0.4" />
 
     <TextView
         android:id="@+id/controller"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="96dp"
         android:text="@string/start_title"
         android:textColor="#FF9800"
         android:textSize="30sp"

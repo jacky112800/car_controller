@@ -130,6 +130,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun restartApp() {
+        Looper.prepare()
+        Toast.makeText(this, "連線失敗，請確認IP是否輸入正確或主機異常，重啟APP中", Toast.LENGTH_SHORT).show()
+//        Thread.sleep(1000)
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)

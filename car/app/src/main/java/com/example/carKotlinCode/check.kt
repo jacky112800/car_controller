@@ -6,13 +6,13 @@ import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.thread
 
 
 class check : AppCompatActivity() {
     var count = 0
 
     var timeU: TimeUnit = TimeUnit.MILLISECONDS
-    var backCdBoolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,8 +21,12 @@ class check : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        Thread.sleep(100)
-        checkInfo()
+        val cheakInfoTwoThread = thread(start = false) {
+            cheakInfoTwo()
+        }
+        Thread.sleep(1000)
+        cheakInfoTwoThread.start()
+//        checkInfo()
 //        testCheck()
     }
 
@@ -52,6 +56,19 @@ class check : AppCompatActivity() {
         }
     }
 
+    private fun cheakInfoTwo() {
+        try {
+            MainActivity.doJsonCommand.loginJSON()
+            Thread.sleep(5000)
+            when (MainActivity.doClientAction.verify()) {
+                true -> nextActivity()
+                false -> goBack()
+            }
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+    }
+
 
     fun nextActivity() {
         MainActivity.doClientAction.start()
@@ -67,10 +84,10 @@ class check : AppCompatActivity() {
     fun goBack() {
         Looper.prepare()
         Toast.makeText(this, "主機無回應\r\n請檢查主機是否異常", Toast.LENGTH_SHORT).show()
-        val checkIntent = Intent(this, MainActivity::class.java)
-        startActivity(checkIntent)
-        backCdBoolean = true
-        Looper.loop()
+        Thread.sleep(1000)
+        val backToStartActivity = Intent(this, MainActivity::class.java)
+        startActivity(backToStartActivity)
+        System.exit(0)
 
     }
 
