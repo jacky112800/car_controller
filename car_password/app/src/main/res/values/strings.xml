@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">car_password</string>
+    <string name="start_title">無人辨識車控制器</string>
+    <string name="start_button">登入</string>
+    <string name="start_exit">離開</string>
+    <string name="account">密碼:</string>
+    <string name="password">IP:</string>
+    <string name="account_tip">請輸入密碼</string>
+    <string name="password_tip">請輸入IP:PROT</string>
+    <string name="verification">連線驗證中請稍後</string>
+    <string name="verification_tip">驗證</string>
+    <string name="tap_start">點擊以進入操作介面</string>
+    <string name="item_select">辨識物件選擇</string>
+    <string name="item_switch">物件辨識</string>
+    <string name="camera_switch">解析度切換</string>
+    <string name="file_location">附加回傳辨識結果設定</string>
+    <string name="color_select">主機關閉選項</string>
+    <string name="working">版本資訊</string>
+    <string name="title_activity_setting">設定</string>
+    <string name="confirm_st">確定</string>
+    <string name="check_config">查看目前選取物件</string>
+    <string name="infer_h">長：</string>
+    <string name="infer_w">寬：</string>
+    <string name="infer_change">確定</string>
+    <string name="infer_change_title">解析度變更</string>
+    <string name="camera_item">未開啟物件偵測</string>
+
+
+
+
+
+</resources>

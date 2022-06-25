@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.car",
+  "applicationId": "com.example.carpassword",
   "variantName": "debug",
   "elements": [
     {
