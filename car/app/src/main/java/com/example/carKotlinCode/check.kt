@@ -21,13 +21,13 @@ class check : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val cheakInfoTwoThread = thread(start = false) {
-            cheakInfoTwo()
-        }
-        Thread.sleep(1000)
-        cheakInfoTwoThread.start()
+//        val cheakInfoTwoThread = thread(start = false) {
+//            cheakInfoTwo()
+//        }
+//        Thread.sleep(1000)
+//        cheakInfoTwoThread.start()
 //        checkInfo()
-//        testCheck()
+        testCheck()
     }
 
     private fun checkInfo() {

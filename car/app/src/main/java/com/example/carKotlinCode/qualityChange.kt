@@ -17,8 +17,8 @@ class qualityChange : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_infer_change)
         val inferChangeButton = findViewById<Button>(R.id.infer_change_btn)
-        infer_h_text.inputType = EditorInfo.TYPE_CLASS_TEXT
-        infer_w_text.inputType = EditorInfo.TYPE_CLASS_TEXT
+        infer_h_text.inputType = EditorInfo.TYPE_CLASS_NUMBER
+        infer_w_text.inputType = EditorInfo.TYPE_CLASS_NUMBER
 
         inferChangeButton.setOnClickListener {
             if (infer_h_text.text.isNullOrEmpty() && infer_w_text.text.isNullOrEmpty()) {
